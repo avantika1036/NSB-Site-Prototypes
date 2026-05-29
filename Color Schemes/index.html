@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NSB — Color Scheme Showcase v2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15px;min-height:100vh}
+
+/* ── SHELL NAV ── */
+.shell-nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(10,12,16,0.97);backdrop-filter:blur(16px);
+  border-bottom:1px solid #1e2430;
+  padding:0 36px;height:58px;display:flex;align-items:center;gap:16px;
+}
+.shell-logo{
+  font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;
+  color:#00d97e;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px;
+}
+.shell-logo svg{width:17px;height:17px}
+.shell-divider{width:1px;height:22px;background:#1e2430}
+.shell-title{font-size:12px;color:#6a7890;font-weight:500;letter-spacing:0.2px}
+.shell-count{
+  margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  background:#00d97e15;border:1px solid #00d97e30;color:#00d97e;
+  padding:4px 12px;border-radius:20px;
+}
+
+/* ── PAGE LAYOUT ── */
+.page-wrap{display:flex;min-height:calc(100vh - 58px)}
+.sidebar{
+  width:256px;flex-shrink:0;background:#0a0c10;
+  border-right:1px solid #1e2430;
+  padding:20px 0 40px;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;
+}
+.sb-group-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:2px;color:#3a4860;
+  padding:14px 18px 5px;margin-top:6px;
+}
+.sb-link{
+  display:flex;align-items:center;gap:10px;padding:8px 18px;cursor:pointer;
+  font-size:12px;color:#6a7890;border-left:2px solid transparent;
+  transition:all 0.15s;font-weight:500;
+}
+.sb-link:hover{color:#c8d0e0;background:#0e1218}
+.sb-link.active{color:#e8eaf0;border-left-color:#00d97e;background:#00d97e08}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sb-chip{
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:3px;margin-left:auto;
+}
+
+.content{flex:1;overflow-x:hidden;max-width:1600px;margin:0 auto;width:100%}
+
+/* ── SECTION HEADERS ── */
+.sec-header{padding:36px 52px 22px;border-bottom:1px solid #1e2430;position:relative}
+.sec-header.light-bg{background:#f0f3f8;border-color:#d4dae8}
+.sec-mode-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:2.5px;color:#3a4860;margin-bottom:8px;
+}
+.sec-mode-dot{width:7px;height:7px;border-radius:50%}
+.sec-h2{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-bottom:5px}
+.sec-desc{font-size:13px;color:#6a7890;font-weight:300;max-width:560px;line-height:1.65}
+.sec-desc.light{color:#5a6880}
+
+/* ── GROUP ── */
+.scheme-group{padding:36px 52px;border-bottom:1px solid #1e2430}
+.scheme-group.light-bg{background:#f0f3f8;border-color:#d4dae8}
+.group-row-label{
+  display:flex;align-items:center;gap:12px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:2px;color:#3a4860;margin-bottom:18px;
+}
+.group-row-label::after{content:'';flex:1;height:1px;background:#1e2430}
+.group-row-label.light-border::after{background:#c8d4e4}
+.group-row-label.light-text{color:#8090a8}
+
+/* ── GRID ── */
+.scheme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;width:100%;max-width:1400px}
+@media(max-width:1100px){.scheme-grid{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}}
+@media(max-width:768px){.scheme-grid{grid-template-columns:1fr}}
+
+/* ── CARD ── */
+*{box-sizing:border-box}
+.card{
+  border-radius:13px;overflow:hidden;border:1.5px solid #1e2430;
+  cursor:pointer;transition:all 0.22s;position:relative;
+  width:100%;max-width:100%;min-width:0;max-height:100%;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 48px rgba(0,0,0,0.45);border-color:#2e3a50}
+.card.picked{border-width:2px}
+.star-badge{
+  position:absolute;top:9px;right:9px;z-index:10;
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  padding:3px 8px;border-radius:4px;display:none;
+}
+.card.picked .star-badge{display:block}
+
+/* ── MINI PREVIEW ── */
+.mini-preview{width:100%;height:260px;display:flex;flex-direction:column;overflow:hidden;position:relative}
+/* nav */
+.mp-nav{height:36px;display:flex;align-items:center;padding:0 14px;gap:7px;flex-shrink:0;border-bottom:1px solid}
+.mp-logo{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px}
+.mp-logo svg{width:13px;height:13px}
+.mp-links{display:flex;gap:1px;flex:1}
+.mp-link{font-size:10px;padding:3px 7px;border-radius:4px}
+.mp-cta{font-size:10px;font-weight:700;padding:5px 11px;border-radius:5px;white-space:nowrap}
+/* hero */
+.mp-hero{flex:1;padding:14px 14px 0;position:relative;overflow:hidden}
+.mp-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  padding:3px 8px;border-radius:12px;margin-bottom:8px;
+}
+.mp-dot{width:4px;height:4px;border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.35}}
+.mp-h1{font-size:15px;font-weight:800;line-height:1.1;letter-spacing:-0.4px;margin-bottom:5px}
+.mp-sub{font-size:9px;line-height:1.5;margin-bottom:10px;font-weight:300;max-width:240px}
+.mp-btns{display:flex;gap:5px;margin-bottom:10px}
+.mp-bp{font-size:9px;font-weight:700;padding:5px 10px;border-radius:5px}
+.mp-bs{font-size:9px;font-weight:600;padding:5px 10px;border-radius:5px;border:1px solid}
+/* mini terminal */
+.mp-term{border-radius:7px 7px 0 0;border:1px solid;border-bottom:none;max-width:210px}
+.mp-tbar{padding:6px 9px;display:flex;align-items:center;gap:4px;border-bottom:1px solid}
+.mp-tdots{display:flex;gap:3px}
+.mp-td{width:6px;height:6px;border-radius:50%}
+.mp-tbody{padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:8px;line-height:1.7}
+
+/* ── CARD FOOTER ── */
+.card-foot{padding:14px 16px;border-top:1px solid;overflow:hidden;width:100%}
+.card-name{font-size:13px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;word-break:break-word;overflow-wrap:break-word}
+.card-desc{font-size:11px;line-height:1.55;margin-bottom:10px;opacity:0.6;word-break:break-word;overflow-wrap:break-word}
+.palette{display:flex;gap:4px;margin-bottom:9px;flex-wrap:wrap;max-width:100%;overflow-x:hidden}
+.pc{height:20px;border-radius:4px;flex:1 1 18px !important;cursor:help;transition:transform 0.1s;min-width:18px;max-width:calc(100% - 4px)}
+.pc:hover{transform:scaleY(1.3)}
+.tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px}
+
+/* ── COMPARISON STRIP ── */
+.compare-strip{
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:rgba(10,12,16,0.98);backdrop-filter:blur(20px);
+  border-top:1px solid #1e2430;padding:12px 36px;
+  display:flex;align-items:center;gap:14px;
+  transform:translateY(100%);transition:transform 0.3s ease;
+}
+.compare-strip.show{transform:translateY(0)}
+.cs-label{font-size:12px;font-weight:700;color:#6a7890;white-space:nowrap}
+.cs-items{display:flex;gap:10px;flex:1}
+.cs-item{
+  display:flex;align-items:center;gap:8px;
+  background:#0e1218;border:1px solid #1e2430;border-radius:8px;
+  padding:7px 13px;font-size:11px;font-weight:600;color:#c8d0e0;
+}
+.cs-dot{width:7px;height:7px;border-radius:50%}
+.cs-clear{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:#3a4860;
+  background:none;border:1px solid #1e2430;padding:5px 10px;border-radius:6px;
+  cursor:pointer;transition:all 0.15s;
+}
+.cs-clear:hover{color:#e8eaf0;border-color:#2e3a50}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#1e2430;border-radius:2px}
+
+/* ── CURRENT badge ── */
+.cur-badge{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;background:#00d97e20;color:#00d97e;border:1px solid #00d97e40;padding:2px 6px;border-radius:3px}
+.ospo-badge{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;background:#003c6c20;color:#4d9fff;border:1px solid #4d9fff30;padding:2px 6px;border-radius:3px}
+
+/* ── GRADIENT TEXT ── */
+.gradient-text{background:linear-gradient(90deg,var(--grad-from),var(--grad-to));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800}
+</style>
+</head>
+<body>
+
+<!-- ═══ SHELL NAV ═══ -->
+<nav class="shell-nav">
+  <div class="shell-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    NSB
+  </div>
+  <div class="shell-divider"></div>
+  <span class="shell-title">Color Scheme Showcase — GSoC 2026 · For review</span>
+  <div class="shell-count">30 Schemes · 4 Sections</div>
+</nav>
+
+<div class="page-wrap">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="sb-group-label">🌑 Dark Mode</div>
+  <div class="sb-link active" id="sbl-ds" onclick="jumpTo('sec-ds')">
+    <div class="sb-dot" style="background:#2e3a50"></div>
+    Single Color
+    <span class="sb-chip" style="background:#ffffff10;color:#6a7890">6</span>
+  </div>
+  <div class="sb-link" id="sbl-dm" onclick="jumpTo('sec-dm')">
+    <div class="sb-dot" style="background:#2e3a50"></div>
+    Multi Color
+    <span class="sb-chip" style="background:#ffffff10;color:#6a7890">9</span>
+  </div>
+
+  <div class="sb-group-label" style="margin-top:12px">☀️ Light Mode</div>
+  <div class="sb-link" id="sbl-ls" onclick="jumpTo('sec-ls')">
+    <div class="sb-dot" style="background:#c8d4e4"></div>
+    Single Color
+    <span class="sb-chip" style="background:#00000012;color:#8090a8">6</span>
+  </div>
+  <div class="sb-link" id="sbl-lm" onclick="jumpTo('sec-lm')">
+    <div class="sb-dot" style="background:#c8d4e4"></div>
+    Multi Color
+    <span class="sb-chip" style="background:#00000012;color:#8090a8">9</span>
+  </div>
+
+  <div style="margin:24px 18px 0;padding:14px;background:#0e1218;border:1px solid #1e2430;border-radius:8px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#3a4860;margin-bottom:8px">How to use</div>
+    <div style="font-size:11px;color:#5a6880;line-height:1.7">Click any card to <span style="color:#00d97e">★ favourite</span> it.<br>Up to 2 shown in the comparison strip below.</div>
+  </div>
+</aside>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="content">
+
+<!-- ══════════════════════════════
+  DARK MODE — SINGLE COLOR
+══════════════════════════════ -->
+<div class="sec-header" id="sec-ds">
+  <div class="sec-mode-tag"><div class="sec-mode-dot" style="background:#e8eaf0;box-shadow:0 0 6px #e8eaf060"></div>Dark Mode · Single Color</div>
+  <div class="sec-h2" style="color:#e8eaf0">6 Single-Accent Dark Schemes</div>
+  <div class="sec-desc">Each uses one accent color on a deep neutral base — pulled directly from the reference images your mentor already saw.</div>
+</div>
+
+<div class="scheme-group" id="sec-ds-cards">
+  <div class="group-row-label">Schemes 1 – 6 <span style="color:#e8eaf0;font-size:8px;font-weight:400;text-transform:none;letter-spacing:0;margin-left:4px">as in reference images</span></div>
+  <div class="scheme-grid">
+
+<!-- ─── D1: EMERALD (CURRENT) ─── -->
+<div class="card" id="cd1" onclick="pick('d1','#00d97e','Emerald — Current')" style="border-color:#00d97e40">
+  <div class="star-badge" style="background:#00d97e;color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#0d0f12">
+    <div class="mp-nav" style="background:#0d0f12cc;border-color:#2a2f3a">
+      <div class="mp-logo" style="color:#00d97e"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#9aa3b5">Get Started</span><span class="mp-link" style="color:#9aa3b5">Docs</span><span class="mp-link" style="color:#9aa3b5">Community</span></div>
+      <span class="mp-cta" style="background:#00d97e;color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#00d97e09 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#00d97e20;border:1px solid #00d97e40;color:#00d97e"><div class="mp-dot" style="background:#00d97e"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#e8eaf0">Bridge your <span style="color:#00d97e">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#9aa3b5">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#00d97e;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#e8eaf0;border-color:#3a4150;background:#1a1e25">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#2a2f3a">
+        <div class="mp-tbar" style="background:#13161b;border-color:#2a2f3a"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#13161b"><div><span style="color:#00d97e">$</span> <span style="color:#e8eaf0">pip install nsb-client</span></div><div style="color:#5a6480">Successfully installed nsb-client-0.4.2</div><div style="color:#00d97e;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#0d0f12;border-color:#2a2f3a;color:#e8eaf0">
+    <div class="card-name">Emerald Green <span class="cur-badge">CURRENT</span></div>
+    <div class="card-desc" style="color:#9aa3b5">Charcoal + Emerald + Cyan. Classic hacker terminal. The prototype your mentor already approved.</div>
+    <div class="palette">
+      <div class="pc" style="background:#0d0f12;border:1px solid #2a2f3a" title="#0d0f12"></div>
+      <div class="pc" style="background:#13161b" title="#13161b"></div>
+      <div class="pc" style="background:#1a1e25" title="#1a1e25"></div>
+      <div class="pc" style="background:#00d97e" title="#00d97e — Main"></div>
+      <div class="pc" style="background:#38bdf8" title="#38bdf8 — Bridge glow"></div>
+      <div class="pc" style="background:#e8eaf0" title="#e8eaf0 — Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#00d97e15;color:#00d97e">Technical</span>
+      <span class="tag" style="background:#00d97e15;color:#00d97e">Hacker</span>
+      <span class="tag" style="background:#1e2430;color:#6a7890">Dark</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── D2: NAVY BLUE ─── -->
+<div class="card" id="cd2" onclick="pick('d2','#60A5FA','Navy Blue')">
+  <div class="star-badge" style="background:#60A5FA;color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#070d1a">
+    <div class="mp-nav" style="background:#070d1acc;border-color:#132040">
+      <div class="mp-logo" style="color:#60A5FA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#6080b0">Get Started</span><span class="mp-link" style="color:#6080b0">Docs</span><span class="mp-link" style="color:#6080b0">Community</span></div>
+      <span class="mp-cta" style="background:#60A5FA;color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#60A5FA09 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#60A5FA20;border:1px solid #60A5FA40;color:#60A5FA"><div class="mp-dot" style="background:#60A5FA"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#dce8f8">Bridge your <span style="color:#60A5FA">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#6080b0">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#60A5FA;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#dce8f8;border-color:#1e3060;background:#0e1a30">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#132040">
+        <div class="mp-tbar" style="background:#0c1428;border-color:#132040"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#0c1428"><div><span style="color:#60A5FA">$</span> <span style="color:#dce8f8">pip install nsb-client</span></div><div style="color:#2a4870">Successfully installed nsb-client-0.4.2</div><div style="color:#60A5FA;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#070d1a;border-color:#132040;color:#dce8f8">
+    <div class="card-name" style="color:#dce8f8">Navy Blue</div>
+    <div class="card-desc" style="color:#6080b0">Deep Navy + Electric Blue + White. Professional, trustworthy. Standard for networking/security tools.</div>
+    <div class="palette">
+      <div class="pc" style="background:#070d1a;border:1px solid #132040" title="#070d1a"></div>
+      <div class="pc" style="background:#0c1428" title="#0c1428"></div>
+      <div class="pc" style="background:#132040" title="#132040"></div>
+      <div class="pc" style="background:#60A5FA" title="#60A5FA — Main"></div>
+      <div class="pc" style="background:#93C5FD" title="#93C5FD — Bridge highlight"></div>
+      <div class="pc" style="background:#dce8f8" title="#dce8f8 — Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#60A5FA15;color:#60A5FA">Corporate</span>
+      <span class="tag" style="background:#60A5FA15;color:#60A5FA">Trustworthy</span>
+      <span class="tag" style="background:#132040;color:#6080b0">Dark</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── D3: GOLD (GRAPHITE GOLD) ─── -->
+<div class="card" id="cd3" onclick="pick('d3','#f5c842','Gold — Graphite Gold')">
+  <div class="star-badge" style="background:#f5c842;color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#0e0c08">
+    <div class="mp-nav" style="background:#0e0c08cc;border-color:#2c2410">
+      <div class="mp-logo" style="color:#f5c842"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#8a7a50">Get Started</span><span class="mp-link" style="color:#8a7a50">Docs</span><span class="mp-link" style="color:#8a7a50">Community</span></div>
+      <span class="mp-cta" style="background:#f5c842;color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#f5c84209 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#f5c84220;border:1px solid #f5c84240;color:#f5c842"><div class="mp-dot" style="background:#f5c842"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#f0e8d8">Bridge your <span style="color:#f5c842">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#8a7a50">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#f5c842;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#f0e8d8;border-color:#3a3020;background:#1c1810">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#2c2410">
+        <div class="mp-tbar" style="background:#161208;border-color:#2c2410"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#161208"><div><span style="color:#f5c842">$</span> <span style="color:#f0e8d8">pip install nsb-client</span></div><div style="color:#5a4820">Successfully installed nsb-client-0.4.2</div><div style="color:#f5c842;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#0e0c08;border-color:#2c2410;color:#f0e8d8">
+    <div class="card-name" style="color:#f0e8d8">Gold (Graphite Gold)</div>
+    <div class="card-desc" style="color:#8a7a50">Graphite + Soft Gold + Ivory. Premium, warm, engineering-documentation feel. Sophisticated choice.</div>
+    <div class="palette">
+      <div class="pc" style="background:#0e0c08;border:1px solid #2c2410" title="#0e0c08"></div>
+      <div class="pc" style="background:#161208" title="#161208"></div>
+      <div class="pc" style="background:#1c1810" title="#1c1810"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Main"></div>
+      <div class="pc" style="background:#fde68a" title="#fde68a — Bridge glow"></div>
+      <div class="pc" style="background:#f0e8d8" title="#f0e8d8 — Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#f5c84215;color:#f5c842">Premium</span>
+      <span class="tag" style="background:#f5c84215;color:#f5c842">Warm</span>
+      <span class="tag" style="background:#2c2410;color:#8a7a50">Dark</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── D4: MONOCHROME ─── -->
+<div class="card" id="cd4" onclick="pick('d4','#ffffff','Monochrome')">
+  <div class="star-badge" style="background:#fff;color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#090909">
+    <div class="mp-nav" style="background:#090909cc;border-color:#222">
+      <div class="mp-logo" style="color:#ffffff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#777">Get Started</span><span class="mp-link" style="color:#777">Docs</span><span class="mp-link" style="color:#777">Community</span></div>
+      <span class="mp-cta" style="background:#ffffff;color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#ffffff07 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#ffffff18;border:1px solid #ffffff30;color:#ccc"><div class="mp-dot" style="background:#fff"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#ffffff">Bridge your <span style="text-decoration:underline;text-underline-offset:3px">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#777">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#ffffff;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#fff;border-color:#333;background:#181818">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#222">
+        <div class="mp-tbar" style="background:#111;border-color:#222"><div class="mp-tdots"><div class="mp-td" style="background:#444"></div><div class="mp-td" style="background:#666"></div><div class="mp-td" style="background:#888"></div></div></div>
+        <div class="mp-tbody" style="background:#111"><div><span style="color:#fff">$</span> <span style="color:#ccc">pip install nsb-client</span></div><div style="color:#444">Successfully installed nsb-client-0.4.2</div><div style="color:#fff;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#090909;border-color:#222;color:#ffffff">
+    <div class="card-name" style="color:#ffffff">Monochrome</div>
+    <div class="card-desc" style="color:#777">Black + White + Gray Accents. Ultra-minimal, timeless. Lets content breathe with zero visual noise.</div>
+    <div class="palette">
+      <div class="pc" style="background:#090909;border:1px solid #222" title="#090909"></div>
+      <div class="pc" style="background:#111" title="#111"></div>
+      <div class="pc" style="background:#222" title="#222"></div>
+      <div class="pc" style="background:#555" title="#555 — Mid gray"></div>
+      <div class="pc" style="background:#aaa" title="#aaa"></div>
+      <div class="pc" style="background:#ffffff" title="#ffffff — Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#ffffff15;color:#fff">Minimal</span>
+      <span class="tag" style="background:#ffffff15;color:#fff">Timeless</span>
+      <span class="tag" style="background:#222;color:#777">Dark</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── D5: NSB BRAND INSPIRED ─── -->
+<div class="card" id="cd5" onclick="pick('d5','#335ac0','NSB Brand Inspired')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#335ac0,#DC2626);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#07101c">
+    <div class="mp-nav" style="background:#07101ccc;border-color:#0f1a28">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#023672,#DE344A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#5a8ab8">Get Started</span><span class="mp-link" style="color:#5a8ab8">Docs</span><span class="mp-link" style="color:#5a8ab8">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#023672,#DE344A);color:#fff;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 70% 50% at 30% 0%,#DC262609 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#06b6d408 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#DC262620;border:1px solid #DC262640;color:#DC2626"><div class="mp-dot" style="background:#FCD34D"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#d8e8f8">Bridge your <span style="background:linear-gradient(135deg,#1C7FBA 0%,#FDD04A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#5a8ab8">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#023672,#DE344A);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#d8e8f8;border-color:#0f1a28;background:#0a1420">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#0e1820">
+        <div class="mp-tbar" style="background:#0a1018;border-color:#0e1820"><div class="mp-tdots"><div class="mp-td" style="background:#023672"></div><div class="mp-td" style="background:#DE344A"></div><div class="mp-td" style="background:#FDD04A"></div></div></div>
+        <div class="mp-tbody" style="background:#0a1018"><div><span style="color:#023672">$</span> <span style="color:#d8e8f8">pip install nsb-client</span></div><div style="color:#4a7090">Successfully installed nsb-client-0.4.2</div><div style="color:#DE344A;font-weight:600">🎉  Simulation running — 2 clients active</div><div style="color:#FDD04A">✦ Yellow bird active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#080c10;border-color:#0e1820;color:#d8e8f8">
+    <div class="card-name" style="color:#d8e8f8">NSB Brand Inspired <span class="ospo-badge">OSPO</span></div>
+    <div class="card-desc" style="color:#5a8ab8">Dark Blue (#023672) + Bridge Red (#DE344A) + Cyan (#3CA4C6) + Bird Yellow (#FDD04A). Exact colors from your NSB logo.</div>
+    <div class="palette">
+      <div class="pc" style="background:#080c10;border:1px solid #0e1820" title="#080c10"></div>
+      <div class="pc" style="background:#0a1018" title="#0a1018"></div>
+      <div class="pc" style="background:#023672" title="#023672 — Dark Blue"></div>
+      <div class="pc" style="background:#DE344A" title="#DE344A — Bridge Red"></div>
+      <div class="pc" style="background:#3CA4C6" title="#3CA4C6 — Cyan"></div>
+      <div class="pc" style="background:#FDD04A" title="#FDD04A — Bird Yellow"></div>
+      <div class="pc" style="background:#d8e8f8" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#02367220;color:#7abcbf">NSB Dark Blue</span>
+      <span class="tag" style="background:#DE344A20;color:#DE344A">Bridge Red</span>
+      <span class="tag" style="background:#3CA4C620;color:#3CA4C6">Cyan</span>
+      <span class="tag" style="background:#FDD04A20;color:#FDD04A">Yellow"
+    </div>
+  </div>
+</div>
+
+<!-- ─── D6: CYBER NETWORK ─── -->
+<div class="card" id="cd6" onclick="pick('d6','#22d3ee','Cyber Network')">
+  <div class="star-badge" style="background:#22d3ee;color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#060812">
+    <div class="mp-nav" style="background:#060812cc;border-color:#0e1428">
+      <div class="mp-logo" style="color:#22d3ee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#404e70">Get Started</span><span class="mp-link" style="color:#404e70">Docs</span><span class="mp-link" style="color:#404e70">Community</span></div>
+      <span class="mp-cta" style="background:#22d3ee;color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#22d3ee09 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#22d3ee20;border:1px solid #22d3ee40;color:#22d3ee"><div class="mp-dot" style="background:#22d3ee"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#b8d8f0">Bridge your <span style="color:#22d3ee">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#404e70">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#22d3ee;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#b8d8f0;border-color:#0e1428;background:#0a1020">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#0e1428">
+        <div class="mp-tbar" style="background:#08101e;border-color:#0e1428"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#08101e"><div><span style="color:#22d3ee">$</span> <span style="color:#b8d8f0">pip install nsb-client</span></div><div style="color:#1e3050">Successfully installed nsb-client-0.4.2</div><div style="color:#a855f7;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#060812;border-color:#0e1428;color:#b8d8f0">
+    <div class="card-name" style="color:#b8d8f0">Cyber Network</div>
+    <div class="card-desc" style="color:#404e70">Dark Slate + Neon Cyan + Purple. Futuristic, packet-flow vibes. Most "networking infrastructure" feel of all schemes.</div>
+    <div class="palette">
+      <div class="pc" style="background:#060812;border:1px solid #0e1428" title="#060812"></div>
+      <div class="pc" style="background:#08101e" title="#08101e"></div>
+      <div class="pc" style="background:#0a1020" title="#0a1020"></div>
+      <div class="pc" style="background:#22d3ee" title="#22d3ee — Neon Cyan"></div>
+      <div class="pc" style="background:#a855f7" title="#a855f7 — Purple"></div>
+      <div class="pc" style="background:#b8d8f0" title="#b8d8f0 — Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#22d3ee15;color:#22d3ee">Futuristic</span>
+      <span class="tag" style="background:#a855f715;color:#a855f7">Cyber</span>
+      <span class="tag" style="background:#0e1428;color:#404e70">Dark</span>
+    </div>
+  </div>
+</div>
+
+  </div><!-- /grid -->
+</div><!-- /group -->
+
+<!-- ══════════════════════════════
+  DARK MODE — MULTI COLOR
+══════════════════════════════ -->
+<div class="sec-header" id="sec-dm">
+  <div class="sec-mode-tag"><div class="sec-mode-dot" style="background:#e8eaf0;box-shadow:0 0 6px #e8eaf060"></div>Dark Mode · Multi Color</div>
+  <div class="sec-h2" style="color:#e8eaf0">8 Multi-Accent Dark Combos with Gradients</div>
+  <div class="sec-desc">Smart combinations using gradients for depth and visual hierarchy — plus logo-accurate color pairs from your NSB bridge design.</div>
+</div>
+
+<div class="scheme-group" id="sec-dm-cards">
+  <div class="group-row-label">Best combos from the single schemes</div>
+  <div class="scheme-grid">
+
+<!-- ─── DM1: EMERALD × GOLD (Teal + Gold) ─── -->
+<div class="card" id="cdm1" onclick="pick('dm1','#00d97e','Emerald × Gold')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#00d97e,#f5c842);color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#09100e">
+    <div class="mp-nav" style="background:#09100ecc;border-color:#162218">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#00d97e,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#506050">Get Started</span><span class="mp-link" style="color:#506050">Docs</span><span class="mp-link" style="color:#506050">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#00d97e,#20b870);color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 60% 50% at 25% 0%,#00d97e09 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#f5c84208 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#00d97e20;border:1px solid #00d97e40;color:#00d97e"><div class="mp-dot" style="background:#00d97e"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#d8f0e0">Bridge your <span style="background:linear-gradient(90deg,#00d97e,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#f5c842">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#506050">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#00d97e;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#d8f0e0;border-color:#1e3020;background:#101a10">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#162218">
+        <div class="mp-tbar" style="background:#0d1610;border-color:#162218"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#0d1610"><div><span style="color:#00d97e">$</span> <span style="color:#d8f0e0">pip install nsb-client</span></div><div style="color:#2a4030">Successfully installed nsb-client-0.4.2</div><div style="color:#f5c842;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#09100e;border-color:#162218;color:#d8f0e0">
+    <div class="card-name" style="color:#d8f0e0">Emerald × Gold <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#00d97e18;color:#00d97e;border:1px solid #00d97e30;padding:2px 6px;border-radius:3px">RECOMMENDED</span></div>
+    <div class="card-desc" style="color:#506050">D1 + D3 combined. Green for actions, Gold for success/terminal. The two warmest accents pair naturally — UCSC OSPO feel.</div>
+    <div class="palette">
+      <div class="pc" style="background:#09100e;border:1px solid #162218"></div>
+      <div class="pc" style="background:#0d1610"></div>
+      <div class="pc" style="background:#101a10"></div>
+      <div class="pc" style="background:#00d97e" title="#00d97e — Primary"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Highlight/Success"></div>
+      <div class="pc" style="background:#d8f0e0" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#00d97e15;color:#00d97e">D1 Emerald</span>
+      <span class="tag" style="background:#f5c84215;color:#f5c842">D3 Gold</span>
+      <span class="tag" style="background:#162218;color:#506050">OSPO</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM2: NAVY × CYBER (Blue + Cyan) ─── -->
+<div class="card" id="cdm2" onclick="pick('dm2','#60A5FA','Navy × Cyber')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#60A5FA,#22d3ee);color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#060c16">
+    <div class="mp-nav" style="background:#060c16cc;border-color:#0e1a28">
+      <div class="mp-logo" style="color:#60A5FA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#405878">Get Started</span><span class="mp-link" style="color:#405878">Docs</span><span class="mp-link" style="color:#405878">Community</span></div>
+      <span class="mp-cta" style="background:#60A5FA;color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 60% 50% at 25% 0%,#60A5FA09 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#22d3ee08 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#60A5FA20;border:1px solid #60A5FA40;color:#60A5FA"><div class="mp-dot" style="background:#60A5FA"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#cce4f8">Bridge your <span style="background:linear-gradient(90deg,#60A5FA,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#22d3ee">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#405878">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#60A5FA;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#cce4f8;border-color:#0e1a28;background:#0a1422">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#0e1a28">
+        <div class="mp-tbar" style="background:#09121e;border-color:#0e1a28"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#09121e"><div><span style="color:#60A5FA">$</span> <span style="color:#cce4f8">pip install nsb-client</span></div><div style="color:#1e3858">Successfully installed nsb-client-0.4.2</div><div style="color:#22d3ee;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#060c16;border-color:#0e1a28;color:#cce4f8">
+    <div class="card-name" style="color:#cce4f8">Navy × Cyber</div>
+    <div class="card-desc" style="color:#405878">D2 + D6 combined. Analogous blue→cyan gradient. Deep ocean meets neon network pulse. Very "network infrastructure."</div>
+    <div class="palette">
+      <div class="pc" style="background:#060c16;border:1px solid #0e1a28"></div>
+      <div class="pc" style="background:#09121e"></div>
+      <div class="pc" style="background:#0a1422"></div>
+      <div class="pc" style="background:#60A5FA" title="#60A5FA — Navy Blue (D2)"></div>
+      <div class="pc" style="background:#22d3ee" title="#22d3ee — Cyber Cyan (D6)"></div>
+      <div class="pc" style="background:#cce4f8" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#60A5FA15;color:#60A5FA">D2 Navy</span>
+      <span class="tag" style="background:#22d3ee15;color:#22d3ee">D6 Cyber</span>
+      <span class="tag" style="background:#0e1a28;color:#405878">Analogous</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM3: NSB BRAND × GOLD (Blue + Amber + Gold) ─── -->
+<div class="card" id="cdm3" onclick="pick('dm3','#38bdf8','NSB Brand × Gold')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#38bdf8,#f5c842);color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#07101c">
+    <div class="mp-nav" style="background:#07101ccc;border-color:#101e2e">
+      <div class="mp-logo" style="color:#38bdf8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#406070">Get Started</span><span class="mp-link" style="color:#406070">Docs</span><span class="mp-link" style="color:#406070">Community</span></div>
+      <span class="mp-cta" style="background:#38bdf8;color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 65% 50% at 25% 0%,#38bdf809 0%,transparent 55%),radial-gradient(ellipse 55% 40% at 75% 10%,#f5c84208 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#38bdf820;border:1px solid #38bdf840;color:#38bdf8"><div class="mp-dot" style="background:#38bdf8"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#cce8f8">Bridge your <span style="background:linear-gradient(90deg,#38bdf8,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#f5c842">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#406070">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#38bdf8;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#cce8f8;border-color:#101e2e;background:#0d1828">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#101e2e">
+        <div class="mp-tbar" style="background:#0a1622;border-color:#101e2e"><div class="mp-tdots"><div class="mp-td" style="background:#ef4444"></div><div class="mp-td" style="background:#f59e0b"></div><div class="mp-td" style="background:#22c55e"></div></div></div>
+        <div class="mp-tbody" style="background:#0a1622"><div><span style="color:#38bdf8">$</span> <span style="color:#cce8f8">pip install nsb-client</span></div><div style="color:#204050">Successfully installed nsb-client-0.4.2</div><div style="color:#f5c842;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#07101c;border-color:#101e2e;color:#cce8f8">
+    <div class="card-name" style="color:#cce8f8">NSB Brand × Gold</div>
+    <div class="card-desc" style="color:#406070">D5 + D3 combined. Bridge-blue for primary, gold for success/highlights. Directly inspired by the NSB logo + bridge illustration colors.</div>
+    <div class="palette">
+      <div class="pc" style="background:#07101c;border:1px solid #101e2e"></div>
+      <div class="pc" style="background:#0a1622"></div>
+      <div class="pc" style="background:#0d1828"></div>
+      <div class="pc" style="background:#38bdf8" title="#38bdf8 — NSB Blue (D5)"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Gold (D3)"></div>
+      <div class="pc" style="background:#cce8f8" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#38bdf815;color:#38bdf8">D5 Brand Blue</span>
+      <span class="tag" style="background:#f5c84215;color:#f5c842">D3 Gold</span>
+      <span class="tag" style="background:#101e2e;color:#406070">Logo-inspired</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM4: MONOCHROME × EMERALD (special) ─── -->
+<div class="card" id="cdm4" onclick="pick('dm4','#00d97e','Mono × Emerald')">
+  <div class="star-badge" style="background:#fff;color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#080808">
+    <div class="mp-nav" style="background:#080808cc;border-color:#1e1e1e">
+      <div class="mp-logo" style="color:#ffffff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#666">Get Started</span><span class="mp-link" style="color:#666">Docs</span><span class="mp-link" style="color:#666">Community</span></div>
+      <span class="mp-cta" style="background:#ffffff;color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#00d97e07 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#ffffff15;border:1px solid #ffffff25;color:#aaa"><div class="mp-dot" style="background:#00d97e"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#ffffff">Bridge your <span style="color:#ffffff;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#00d97e">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#666">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#ffffff;color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#fff;border-color:#2e2e2e;background:#161616">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#1e1e1e">
+        <div class="mp-tbar" style="background:#101010;border-color:#1e1e1e"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#101010"><div><span style="color:#fff">$</span> <span style="color:#ccc">pip install nsb-client</span></div><div style="color:#444">Successfully installed nsb-client-0.4.2</div><div style="color:#00d97e;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#080808;border-color:#1e1e1e;color:#ffffff">
+    <div class="card-name" style="color:#ffffff">Monochrome × Emerald</div>
+    <div class="card-desc" style="color:#666">D4 + D1. Pure BW palette with emerald reserved only for success/terminal output. Maximum contrast, ultra-readable, subtle NSB identity.</div>
+    <div class="palette">
+      <div class="pc" style="background:#080808;border:1px solid #1e1e1e"></div>
+      <div class="pc" style="background:#101010"></div>
+      <div class="pc" style="background:#1e1e1e"></div>
+      <div class="pc" style="background:#ffffff" title="#fff — Primary"></div>
+      <div class="pc" style="background:#555" title="#555 — Muted"></div>
+      <div class="pc" style="background:#00d97e" title="#00d97e — Success only (D1)"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#ffffff15;color:#fff">D4 Mono</span>
+      <span class="tag" style="background:#00d97e15;color:#00d97e">D1 Emerald</span>
+      <span class="tag" style="background:#1e1e1e;color:#666">Restrained</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM5: BRIDGE RED × NAVY (Logo inspired - red bridge + blue text) ─── -->
+<div class="card" id="cdm5" onclick="pick('dm5','#ef4444','Bridge Red × Navy')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#ef4444,#335ac0);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#08101a">
+    <div class="mp-nav" style="background:#08101acc;border-color:#162030">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#335ac0,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#4070a0">Get Started</span><span class="mp-link" style="color:#4070a0">Docs</span><span class="mp-link" style="color:#4070a0">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#335ac0,#dc2626);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 70% 50% at 30% 0%,#ef444409 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#335ac008 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#ef444420;border:1px solid #ef444440;color:#ef4444"><div class="mp-dot" style="background:#ef4444"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#e0f0fc">Bridge your <span style="background:linear-gradient(135deg,#335ac0 0%,#ef4444 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#4070a0">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#335ac0,#ef4444);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#e0f0fc;border-color:#162030;background:#0c1828">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#162030">
+        <div class="mp-tbar" style="background:#0a1420;border-color:#162030"><div class="mp-tdots"><div class="mp-td" style="background:#ef4444"></div><div class="mp-td" style="background:#f59e0b"></div><div class="mp-td" style="background:#22c55e"></div></div></div>
+        <div class="mp-tbody" style="background:#0a1420"><div><span style="color:#335ac0">$</span> <span style="color:#e0f0fc">pip install nsb-client</span></div><div style="color:#3a5080">Successfully installed nsb-client-0.4.2</div><div style="color:#ef4444;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#08101a;border-color:#162030;color:#e0f0fc">
+    <div class="card-name" style="color:#e0f0fc">Bridge Red × Navy Blue <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#ef444420;color:#ef4444;border:1px solid #ef444430;padding:2px 6px;border-radius:3px">LOGO</span></div>
+    <div class="card-desc" style="color:#4070a0">Red (#ef4444) for bridge visualization + Navy Blue (#335ac0) for solid tech foundation. Directly inspired by your NSB logo colors with gradient buttons.</div>
+    <div class="palette">
+      <div class="pc" style="background:#08101a;border:1px solid #162030"></div>
+      <div class="pc" style="background:#0a1420"></div>
+      <div class="pc" style="background:#0c1828"></div>
+      <div class="pc" style="background:#335ac0" title="#335ac0 — Navy Blue"></div>
+      <div class="pc" style="background:#ef4444" title="#ef4444 — Bridge Red"></div>
+      <div class="pc" style="background:#e0f0fc" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#ef444420;color:#ef4444">Bridge Red</span>
+      <span class="tag" style="background:#335ac020;color:#335ac0">Navy Blue</span>
+      <span class="tag" style="background:#162030;color:#4070a0">Logo</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM6: CYAN GRADIENT × GOLD (Teal to Blue + Yellow) ─── -->
+<div class="card" id="cdm6" onclick="pick('dm6','#22d3ee','Cyan Gradient × Gold')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#22d3ee,#f5c842);color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#060e14">
+    <div class="mp-nav" style="background:#060e14cc;border-color:#0e1a28">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#22d3ee,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#3a7090">Get Started</span><span class="mp-link" style="color:#3a7090">Docs</span><span class="mp-link" style="color:#3a7090">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#06b6d4,#f59e0b);color:#000">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#22d3ee0a 0%,#f5c84208 100%)">
+      <div class="mp-badge" style="background:#22d3ee20;border:1px solid #22d3ee40;color:#22d3ee"><div class="mp-dot" style="background:#f5c842"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#c8e4f0">Bridge your <span style="background:linear-gradient(135deg,#3CA4C6 0%,#FDD04A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#3a7090">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#22d3ee,#f5c842);color:#000">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#c8e4f0;border-color:#0e1a28;background:#0a1620">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#0e1a28">
+        <div class="mp-tbar" style="background:#081620;border-color:#0e1a28"><div class="mp-tdots"><div class="mp-td" style="background:#06b6d4"></div><div class="mp-td" style="background:#f59e0b"></div><div class="mp-td" style="background:#22c55e"></div></div></div>
+        <div class="mp-tbody" style="background:#081620"><div><span style="color:#22d3ee">$</span> <span style="color:#c8e4f0">pip install nsb-client</span></div><div style="color:#2a5080">Successfully installed nsb-client-0.4.2</div><div style="color:#f5c842;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#060e14;border-color:#0e1a28;color:#c8e4f0">
+    <div class="card-name" style="color:#c8e4f0">Cyan Gradient × Gold <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#22d3ee20;color:#22d3ee;border:1px solid #22d3ee30;padding:2px 6px;border-radius:3px">GRADIENT</span></div>
+    <div class="card-desc" style="color:#3a7090">Neon Cyan with gradient transition to warm Gold. Buttons use cyan→gold gradients. Fresh, modern, high contrast — great for highlighting actions.</div>
+    <div class="palette">
+      <div class="pc" style="background:#060e14;border:1px solid #0e1a28"></div>
+      <div class="pc" style="background:#081620"></div>
+      <div class="pc" style="background:#0a1620"></div>
+      <div class="pc" style="background:#22d3ee" title="#22d3ee — Cyan"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Gold"></div>
+      <div class="pc" style="background:#c8e4f0" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#22d3ee15;color:#22d3ee">Cyan</span>
+      <span class="tag" style="background:#f5c84215;color:#f5c842">Gold</span>
+      <span class="tag" style="background:#0e1a28;color:#3a7090">Gradient</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM7: RED BRIDGE GRADIENT (Bridge visualization theme) ─── -->
+<div class="card" id="cdm7" onclick="pick('dm7','#dc2626','Red Bridge Gradient')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#dc2626,#ef4444);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#0a0a0c">
+    <div class="mp-nav" style="background:#0a0a0ccc;border-color:#1e1620">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#dc2626,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#703050">Get Started</span><span class="mp-link" style="color:#703050">Docs</span><span class="mp-link" style="color:#703050">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#dc2626,#b91c1c);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 70% 50% at 30% 0%,#dc262609 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#ef444408 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#dc262620;border:1px solid #dc262640;color:#dc2626"><div class="mp-dot" style="background:#dc2626"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#f5e0e0">Bridge your <span style="background:linear-gradient(135deg,#DE344A 0%,#FDD04A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#703050">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#dc2626,#7f1d1d);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#f5e0e0;border-color:#1e1620;background:#140a0a">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#1e1620">
+        <div class="mp-tbar" style="background:#0f0808;border-color:#1e1620"><div class="mp-tdots"><div class="mp-td" style="background:#dc2626"></div><div class="mp-td" style="background:#f59e0b"></div><div class="mp-td" style="background:#10b981"></div></div></div>
+        <div class="mp-tbody" style="background:#0f0808"><div><span style="color:#ef4444">$</span> <span style="color:#f5e0e0">pip install nsb-client</span></div><div style="color:#4a2a30">Successfully installed nsb-client-0.4.2</div><div style="color:#dc2626;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#0a0a0c;border-color:#1e1620;color:#f5e0e0">
+    <div class="card-name" style="color:#f5e0e0">Red Bridge Gradient <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#dc262620;color:#dc2626;border:1px solid #dc262630;padding:2px 6px;border-radius:3px">BOLD</span></div>
+    <div class="card-desc" style="color:#703050">Rich red gradient from Dark Crimson to Bright Scarlet. Perfect for bridge visualization & alerts. Powerful, attention-grabbing, infrastructure-critical aesthetic.</div>
+    <div class="palette">
+      <div class="pc" style="background:#0a0a0c;border:1px solid #1e1620"></div>
+      <div class="pc" style="background:#0f0808"></div>
+      <div class="pc" style="background:#140a0a"></div>
+      <div class="pc" style="background:#7f1d1d" title="#7f1d1d — Dark Red"></div>
+      <div class="pc" style="background:#dc2626" title="#dc2626 — Medium Red"></div>
+      <div class="pc" style="background:#ef4444" title="#ef4444 — Bright Red"></div>
+      <div class="pc" style="background:#f5e0e0" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#dc262620;color:#dc2626">Red</span>
+      <span class="tag" style="background:#ef444420;color:#ef4444">Gradient</span>
+      <span class="tag" style="background:#1e1620;color:#703050">Bold</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM8: BLUE CYAN GOLD TRIO (Bird + Text + Node from logo) ─── -->
+<div class="card" id="cdm8" onclick="pick('dm8','#335ac0','Blue × Cyan × Gold Trio')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#335ac0,#22d3ee,#fcd34d);color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#08101c">
+    <div class="mp-nav" style="background:#08101ccc;border-color:#101e30">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#335ac0,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#406080">Get Started</span><span class="mp-link" style="color:#406080">Docs</span><span class="mp-link" style="color:#406080">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#335ac0,#06b6d4);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#335ac00c 0%,#22d3ee08 50%,#fcd34d06 100%)">
+      <div class="mp-badge" style="background:#22d3ee20;border:1px solid #22d3ee40;color:#22d3ee"><div class="mp-dot" style="background:#fcd34d"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#d8e8f8">Bridge your <span style="background:linear-gradient(90deg,#60a5fa,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#22d3ee">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#406080">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#335ac0,#22d3ee);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#d8e8f8;border-color:#101e30;background:#0c1628">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#101e30">
+        <div class="mp-tbar" style="background:#0a1424;border-color:#101e30"><div class="mp-tdots"><div class="mp-td" style="background:#335ac0"></div><div class="mp-td" style="background:#22d3ee"></div><div class="mp-td" style="background:#fcd34d"></div></div></div>
+        <div class="mp-tbody" style="background:#0a1424"><div><span style="color:#335ac0">$</span> <span style="color:#d8e8f8">pip install nsb-client</span></div><div style="color:#2a5080">Successfully installed nsb-client-0.4.2</div><div style="color:#22d3ee;font-weight:600">🎉  Simulation running — 2 clients active</div><div style="color:#fcd34d">✦ Bird node connected (golden)</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#08101c;border-color:#101e30;color:#d8e8f8">
+    <div class="card-name" style="color:#d8e8f8">Blue × Cyan × Gold Trio <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#22d3ee20;color:#22d3ee;border:1px solid #22d3ee30;padding:2px 6px;border-radius:3px">TRIO</span></div>
+    <div class="card-desc" style="color:#406080">Three-color scheme: Navy (#335ac0) + Cyan (#22d3ee) + Gold (#fcd34d). Inspired by your NSB logo's blue text, cyan teal, and yellow bird. Perfect multi-layered hierarchy.</div>
+    <div class="palette">
+      <div class="pc" style="background:#08101c;border:1px solid #101e30"></div>
+      <div class="pc" style="background:#0a1424"></div>
+      <div class="pc" style="background:#0c1628"></div>
+      <div class="pc" style="background:#335ac0" title="#335ac0 — Navy Blue"></div>
+      <div class="pc" style="background:#22d3ee" title="#22d3ee — Cyan"></div>
+      <div class="pc" style="background:#fcd34d" title="#fcd34d — Gold (Bird)"></div>
+      <div class="pc" style="background:#d8e8f8" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#335ac020;color:#335ac0">Navy</span>
+      <span class="tag" style="background:#22d3ee20;color:#22d3ee">Cyan</span>
+      <span class="tag" style="background:#fcd34d20;color:#fcd34d">Gold</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM9: NAVY × GOLD × ORANGE (Mentor's requested dark mode) ─── -->
+<div class="card" id="cdm9" onclick="pick('dm9','#335ac0','Navy × Gold × Orange')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#335ac0,#f5c842,#f97316);color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#07101c">
+    <div class="mp-nav" style="background:#07101ccc;border-color:#0f1a28">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#335ac0,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#4070a0">Get Started</span><span class="mp-link" style="color:#4070a0">Docs</span><span class="mp-link" style="color:#4070a0">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#335ac0,#f5c842);color:#fff;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#335ac00c 0%,#f5c84208 50%,#f973160a 100%)">
+      <div class="mp-badge" style="background:#f5c84220;border:1px solid #f5c84240;color:#f5c842"><div class="mp-dot" style="background:#f97316"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#e0e8f0">Bridge your <span style="background:linear-gradient(90deg,#335ac0,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#4070a0">NSB connects network simulators with reliability. Fast. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#335ac0,#f5c842);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#e0e8f0;border-color:#0f1a28;background:#0a1420">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#0f1a28">
+        <div class="mp-tbar" style="background:#0a1420;border-color:#0f1a28"><div class="mp-tdots"><div class="mp-td" style="background:#335ac0"></div><div class="mp-td" style="background:#f5c842"></div><div class="mp-td" style="background:#f97316"></div></div></div>
+        <div class="mp-tbody" style="background:#0a1420"><div><span style="color:#335ac0">$</span> <span style="color:#e0e8f0">pip install nsb-client</span></div><div style="color:#3a5080">Successfully installed nsb-client-0.4.2</div><div style="color:#f97316;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#07101c;border-color:#0f1a28;color:#e0e8f0">
+    <div class="card-name" style="color:#e0e8f0">Navy × Gold × Orange <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#f5c84220;color:#f5c842;border:1px solid #f5c84240;padding:2px 6px;border-radius:3px">MENTOR</span></div>
+    <div class="card-desc" style="color:#4070a0">Dark mode mentor choice: Navy Blue (#335ac0) + Graphite Gold (#f5c842) + Golden Orange (#f97316). Bold, warm, professional with energetic accents.</div>
+    <div class="palette">
+      <div class="pc" style="background:#07101c;border:1px solid #0f1a28"></div>
+      <div class="pc" style="background:#0a1420"></div>
+      <div class="pc" style="background:#335ac0" title="#335ac0 — Navy Blue"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Graphite Gold"></div>
+      <div class="pc" style="background:#f97316" title="#f97316 — Golden Orange"></div>
+      <div class="pc" style="background:#e0e8f0" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#335ac015;color:#335ac0">Navy</span>
+      <span class="tag" style="background:#f5c84220;color:#f5c842">Gold</span>
+      <span class="tag" style="background:#f9731620;color:#f97316">Orange</span>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+<div class="sec-header light-bg" id="sec-ls">
+  <div class="sec-mode-tag" style="color:#6a7890"><div class="sec-mode-dot" style="background:#1a1e25"></div>Light Mode · Single Color</div>
+  <div class="sec-h2" style="color:#0a1018">6 Single-Accent Light Schemes</div>
+  <div class="sec-desc light">Exactly the 6 from your reference image — Fresh Green, Sky Blue, Lavender Purple, Sunset Orange, Coral Red, Turquoise Cyan.</div>
+</div>
+
+<div class="scheme-group light-bg" id="sec-ls-cards">
+  <div class="group-row-label light-text light-border">Schemes 1 – 6 <span style="color:#0a1018;font-size:8px;font-weight:400;text-transform:none;letter-spacing:0;margin-left:4px">as in reference images</span></div>
+  <div class="scheme-grid">
+
+<!-- ─── L1: FRESH GREEN ─── -->
+<div class="card" id="cl1" onclick="pick('l1','#15803d','Fresh Green')" style="border-color:#c8e0d0">
+  <div class="star-badge" style="background:#15803d;color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f5fbf7">
+    <div class="mp-nav" style="background:#f5fbf7ee;border-color:#b8dcc8">
+      <div class="mp-logo" style="color:#15803d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#3a6050">Get Started</span><span class="mp-link" style="color:#3a6050">Docs</span><span class="mp-link" style="color:#3a6050">Community</span></div>
+      <span class="mp-cta" style="background:#15803d;color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#15803d0e 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#15803d18;border:1px solid #15803d30;color:#15803d"><div class="mp-dot" style="background:#15803d"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#0a2818">Bridge your <span style="color:#15803d">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#3a6050">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#15803d;color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#0a2818;border-color:#b8dcc8;background:#e0f2e8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#b8dcc8">
+        <div class="mp-tbar" style="background:#e0f2e8;border-color:#b8dcc8"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#e0f2e8;color:#0a2818"><div><span style="color:#15803d">$</span> <span style="color:#0a2818">pip install nsb-client</span></div><div style="color:#5a9070">Successfully installed nsb-client-0.4.2</div><div style="color:#15803d;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f5fbf7;border-color:#b8dcc8;color:#0a2818">
+    <div class="card-name" style="color:#0a2818">Fresh Green</div>
+    <div class="card-desc" style="color:#3a6050">Mint Green + Teal + Soft Gray. Crisp, natural, documentation-first feel. Mirrors dark mode's emerald in spirit.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f5fbf7;border:1px solid #b8dcc8"></div>
+      <div class="pc" style="background:#e0f2e8"></div>
+      <div class="pc" style="background:#b8dcc8"></div>
+      <div class="pc" style="background:#15803d" title="#15803d — Main"></div>
+      <div class="pc" style="background:#0a2818" title="#0a2818 — Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#15803d18;color:#15803d">Fresh</span>
+      <span class="tag" style="background:#15803d18;color:#15803d">Natural</span>
+      <span class="tag" style="background:#c8e0d0;color:#3a6050">Light</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── L2: SKY BLUE ─── -->
+<div class="card" id="cl2" onclick="pick('l2','#1d4ed8','Sky Blue')" style="border-color:#c0d4f0">
+  <div class="star-badge" style="background:#1d4ed8;color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f4f8ff">
+    <div class="mp-nav" style="background:#f4f8ffee;border-color:#bdd0ec">
+      <div class="mp-logo" style="color:#1d4ed8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#3858a0">Get Started</span><span class="mp-link" style="color:#3858a0">Docs</span><span class="mp-link" style="color:#3858a0">Community</span></div>
+      <span class="mp-cta" style="background:#1d4ed8;color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#1d4ed80e 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#1d4ed818;border:1px solid #1d4ed830;color:#1d4ed8"><div class="mp-dot" style="background:#1d4ed8"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#060e28">Bridge your <span style="color:#1d4ed8">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#3858a0">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#1d4ed8;color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#060e28;border-color:#bdd0ec;background:#dce8f8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#bdd0ec">
+        <div class="mp-tbar" style="background:#dce8f8;border-color:#bdd0ec"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#dce8f8;color:#060e28"><div><span style="color:#1d4ed8">$</span> <span style="color:#060e28">pip install nsb-client</span></div><div style="color:#6880b0">Successfully installed nsb-client-0.4.2</div><div style="color:#1d4ed8;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f4f8ff;border-color:#bdd0ec;color:#060e28">
+    <div class="card-name" style="color:#060e28">Sky Blue</div>
+    <div class="card-desc" style="color:#3858a0">Sky Blue + Indigo + Cool Gray. Academic, readable, standard open-source documentation feel. Best for broad audiences.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f4f8ff;border:1px solid #bdd0ec"></div>
+      <div class="pc" style="background:#dce8f8"></div>
+      <div class="pc" style="background:#bdd0ec"></div>
+      <div class="pc" style="background:#1d4ed8" title="#1d4ed8 — Main"></div>
+      <div class="pc" style="background:#060e28" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#1d4ed818;color:#1d4ed8">Academic</span>
+      <span class="tag" style="background:#1d4ed818;color:#1d4ed8">Readable</span>
+      <span class="tag" style="background:#c0d4f0;color:#3858a0">Light</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── L3: LAVENDER PURPLE ─── -->
+<div class="card" id="cl3" onclick="pick('l3','#7c3aed','Lavender Purple')" style="border-color:#d0c4ec">
+  <div class="star-badge" style="background:#7c3aed;color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#faf8ff">
+    <div class="mp-nav" style="background:#faf8ffee;border-color:#cfc0e8">
+      <div class="mp-logo" style="color:#7c3aed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#5840a0">Get Started</span><span class="mp-link" style="color:#5840a0">Docs</span><span class="mp-link" style="color:#5840a0">Community</span></div>
+      <span class="mp-cta" style="background:#7c3aed;color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#7c3aed0e 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#7c3aed18;border:1px solid #7c3aed30;color:#7c3aed"><div class="mp-dot" style="background:#7c3aed"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#18083c">Bridge your <span style="color:#7c3aed">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#5840a0">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#7c3aed;color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#18083c;border-color:#cfc0e8;background:#ece5ff">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#cfc0e8">
+        <div class="mp-tbar" style="background:#ece5ff;border-color:#cfc0e8"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#ece5ff;color:#18083c"><div><span style="color:#7c3aed">$</span> <span style="color:#18083c">pip install nsb-client</span></div><div style="color:#8070c0">Successfully installed nsb-client-0.4.2</div><div style="color:#7c3aed;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#faf8ff;border-color:#cfc0e8;color:#18083c">
+    <div class="card-name" style="color:#18083c">Lavender Purple</div>
+    <div class="card-desc" style="color:#5840a0">Lavender + Purple + Soft Blue. Creative, unique, memorable. Stands apart from typical networking tool aesthetics.</div>
+    <div class="palette">
+      <div class="pc" style="background:#faf8ff;border:1px solid #cfc0e8"></div>
+      <div class="pc" style="background:#ece5ff"></div>
+      <div class="pc" style="background:#cfc0e8"></div>
+      <div class="pc" style="background:#7c3aed" title="#7c3aed — Main"></div>
+      <div class="pc" style="background:#18083c" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#7c3aed18;color:#7c3aed">Creative</span>
+      <span class="tag" style="background:#7c3aed18;color:#7c3aed">Unique</span>
+      <span class="tag" style="background:#d0c4ec;color:#5840a0">Light</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── L4: SUNSET ORANGE ─── -->
+<div class="card" id="cl4" onclick="pick('l4','#ea580c','Sunset Orange')" style="border-color:#f0d4b8">
+  <div class="star-badge" style="background:#ea580c;color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#fff9f4">
+    <div class="mp-nav" style="background:#fff9f4ee;border-color:#f0cca8">
+      <div class="mp-logo" style="color:#ea580c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#7a5030">Get Started</span><span class="mp-link" style="color:#7a5030">Docs</span><span class="mp-link" style="color:#7a5030">Community</span></div>
+      <span class="mp-cta" style="background:#ea580c;color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#ea580c0e 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#ea580c18;border:1px solid #ea580c30;color:#ea580c"><div class="mp-dot" style="background:#ea580c"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#200a00">Bridge your <span style="color:#ea580c">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#7a5030">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#ea580c;color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#200a00;border-color:#f0cca8;background:#fae8d8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#f0cca8">
+        <div class="mp-tbar" style="background:#fae8d8;border-color:#f0cca8"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#fae8d8;color:#200a00"><div><span style="color:#ea580c">$</span> <span style="color:#200a00">pip install nsb-client</span></div><div style="color:#a07050">Successfully installed nsb-client-0.4.2</div><div style="color:#ea580c;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#fff9f4;border-color:#f0cca8;color:#200a00">
+    <div class="card-name" style="color:#200a00">Sunset Orange</div>
+    <div class="card-desc" style="color:#7a5030">Orange + Amber + Warm Beige. Energetic, warm, startup-friendly. Very memorable and unconventional for a network tool.</div>
+    <div class="palette">
+      <div class="pc" style="background:#fff9f4;border:1px solid #f0cca8"></div>
+      <div class="pc" style="background:#fae8d8"></div>
+      <div class="pc" style="background:#f0cca8"></div>
+      <div class="pc" style="background:#ea580c" title="#ea580c — Main"></div>
+      <div class="pc" style="background:#200a00" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#ea580c18;color:#ea580c">Energetic</span>
+      <span class="tag" style="background:#ea580c18;color:#ea580c">Warm</span>
+      <span class="tag" style="background:#f0d4b8;color:#7a5030">Light</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── L5: CORAL RED ─── -->
+<div class="card" id="cl5" onclick="pick('l5','#dc2626','Coral Red')" style="border-color:#f0c8c8">
+  <div class="star-badge" style="background:#dc2626;color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#fff8f8">
+    <div class="mp-nav" style="background:#fff8f8ee;border-color:#f0c0c0">
+      <div class="mp-logo" style="color:#dc2626"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#804040">Get Started</span><span class="mp-link" style="color:#804040">Docs</span><span class="mp-link" style="color:#804040">Community</span></div>
+      <span class="mp-cta" style="background:#dc2626;color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#dc26260e 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#dc262618;border:1px solid #dc262630;color:#dc2626"><div class="mp-dot" style="background:#dc2626"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#1c0202">Bridge your <span style="color:#dc2626">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#804040">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#dc2626;color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#1c0202;border-color:#f0c0c0;background:#f8e0e0">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#f0c0c0">
+        <div class="mp-tbar" style="background:#f8e0e0;border-color:#f0c0c0"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#f8e0e0;color:#1c0202"><div><span style="color:#dc2626">$</span> <span style="color:#1c0202">pip install nsb-client</span></div><div style="color:#a06060">Successfully installed nsb-client-0.4.2</div><div style="color:#dc2626;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#fff8f8;border-color:#f0c0c0;color:#1c0202">
+    <div class="card-name" style="color:#1c0202">Coral Red</div>
+    <div class="card-desc" style="color:#804040">Coral Red + Pink + Soft Gray. Bold, striking, very different from typical developer tools. High energy, unforgettable.</div>
+    <div class="palette">
+      <div class="pc" style="background:#fff8f8;border:1px solid #f0c0c0"></div>
+      <div class="pc" style="background:#f8e0e0"></div>
+      <div class="pc" style="background:#f0c0c0"></div>
+      <div class="pc" style="background:#dc2626" title="#dc2626 — Main"></div>
+      <div class="pc" style="background:#1c0202" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#dc262618;color:#dc2626">Bold</span>
+      <span class="tag" style="background:#dc262618;color:#dc2626">Striking</span>
+      <span class="tag" style="background:#f0c8c8;color:#804040">Light</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── L6: TURQUOISE CYAN ─── -->
+<div class="card" id="cl6" onclick="pick('l6','#0e7490','Turquoise Cyan')" style="border-color:#b0dce8">
+  <div class="star-badge" style="background:#0e7490;color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f0faff">
+    <div class="mp-nav" style="background:#f0faffee;border-color:#a8d4e4">
+      <div class="mp-logo" style="color:#0e7490"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#206880">Get Started</span><span class="mp-link" style="color:#206880">Docs</span><span class="mp-link" style="color:#206880">Community</span></div>
+      <span class="mp-cta" style="background:#0e7490;color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#0e74900e 0%,transparent 70%)">
+      <div class="mp-badge" style="background:#0e749018;border:1px solid #0e749030;color:#0e7490"><div class="mp-dot" style="background:#0e7490"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#021820">Bridge your <span style="color:#0e7490">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#206880">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#0e7490;color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#021820;border-color:#a8d4e4;background:#d8f0f8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#a8d4e4">
+        <div class="mp-tbar" style="background:#d8f0f8;border-color:#a8d4e4"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#d8f0f8;color:#021820"><div><span style="color:#0e7490">$</span> <span style="color:#021820">pip install nsb-client</span></div><div style="color:#4a8898">Successfully installed nsb-client-0.4.2</div><div style="color:#0e7490;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f0faff;border-color:#a8d4e4;color:#021820">
+    <div class="card-name" style="color:#021820">Turquoise Cyan</div>
+    <div class="card-desc" style="color:#206880">Turquoise + Cyan + Soft Blue. Very "network infrastructure" without being dark. Great for technical + non-technical mixed audiences.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f0faff;border:1px solid #a8d4e4"></div>
+      <div class="pc" style="background:#d8f0f8"></div>
+      <div class="pc" style="background:#a8d4e4"></div>
+      <div class="pc" style="background:#0e7490" title="#0e7490 — Main"></div>
+      <div class="pc" style="background:#021820" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#0e749018;color:#0e7490">Network</span>
+      <span class="tag" style="background:#0e749018;color:#0e7490">Technical</span>
+      <span class="tag" style="background:#b0dce8;color:#206880">Light</span>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  LIGHT MODE — MULTI COLOR
+══════════════════════════════ -->
+<div class="sec-header light-bg" id="sec-lm">
+  <div class="sec-mode-tag" style="color:#6a7890"><div class="sec-mode-dot" style="background:#1a1e25"></div>Light Mode · Multi Color</div>
+  <div class="sec-h2" style="color:#0a1018">8 Multi-Accent Light Combos with Gradients</div>
+  <div class="sec-desc light">Smart combinations built with gradients from the 6 single light schemes — enhanced with NSB logo-inspired color pairings for visual impact.</div>
+</div>
+
+<div class="scheme-group light-bg" id="sec-lm-cards">
+  <div class="group-row-label light-text light-border">Best combos from the single schemes + logo inspiration</div>
+  <div class="scheme-grid">
+
+<!-- ─── LM1: FRESH GREEN × TURQUOISE (L1 + L6) ─── -->
+<div class="card" id="clm1" onclick="pick('lm1','#15803d','Green × Cyan')" style="border-color:#b8dce0">
+  <div class="star-badge" style="background:linear-gradient(90deg,#15803d,#0e7490);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f5fdfc">
+    <div class="mp-nav" style="background:#f5fdfcee;border-color:#b0d8d8">
+      <div class="mp-logo" style="color:#15803d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#306860">Get Started</span><span class="mp-link" style="color:#306860">Docs</span><span class="mp-link" style="color:#306860">Community</span></div>
+      <span class="mp-cta" style="background:#15803d;color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 60% 50% at 25% 0%,#15803d0d 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#0e74900c 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#15803d18;border:1px solid #15803d30;color:#15803d"><div class="mp-dot" style="background:#0e7490"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#021c14">Bridge your <span style="background:linear-gradient(90deg,#15803d,#0e7490);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#0e7490">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#306860">NSB connects network simulators. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#15803d;color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#021c14;border-color:#b0d8d8;background:#d8f0ec">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#b0d8d8">
+        <div class="mp-tbar" style="background:#d8f0ec;border-color:#b0d8d8"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#d8f0ec;color:#021c14"><div><span style="color:#15803d">$</span> <span style="color:#021c14">pip install nsb-client</span></div><div style="color:#4a8070">Successfully installed nsb-client-0.4.2</div><div style="color:#0e7490;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f5fdfc;border-color:#b0d8d8;color:#021c14">
+    <div class="card-name" style="color:#021c14">Fresh Green × Turquoise</div>
+    <div class="card-desc" style="color:#306860">L1 + L6. Analogous green→teal. Nat­ural, fresh, and very on-brand for a "network bridge" tool. The most cohesive light multi.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f5fdfc;border:1px solid #b0d8d8"></div>
+      <div class="pc" style="background:#d8f0ec"></div>
+      <div class="pc" style="background:#b0d8d8"></div>
+      <div class="pc" style="background:#15803d" title="#15803d — Green (L1)"></div>
+      <div class="pc" style="background:#0e7490" title="#0e7490 — Cyan (L6)"></div>
+      <div class="pc" style="background:#021c14" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#15803d18;color:#15803d">L1 Green</span>
+      <span class="tag" style="background:#0e749018;color:#0e7490">L6 Cyan</span>
+      <span class="tag" style="background:#b8dce0;color:#306860">Analogous</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LM2: SKY BLUE × LAVENDER (L2 + L3) ─── -->
+<div class="card" id="clm2" onclick="pick('lm2','#1d4ed8','Blue × Lavender')" style="border-color:#c0c4e8">
+  <div class="star-badge" style="background:linear-gradient(90deg,#1d4ed8,#7c3aed);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f6f8ff">
+    <div class="mp-nav" style="background:#f6f8ffee;border-color:#c0b8e8">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#1d4ed8,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#405090">Get Started</span><span class="mp-link" style="color:#405090">Docs</span><span class="mp-link" style="color:#405090">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#1d4ed8,#6030c0);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#1d4ed80c 0%,#7c3aed0a 100%)">
+      <div class="mp-badge" style="background:#1d4ed818;border:1px solid #1d4ed830;color:#1d4ed8"><div class="mp-dot" style="background:#7c3aed"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#08082c">Bridge your <span style="background:linear-gradient(90deg,#1d4ed8,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#7c3aed">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#405090">NSB connects network simulators. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#1d4ed8,#5028b0);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#08082c;border-color:#c0b8e8;background:#e0dcf8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#c0b8e8">
+        <div class="mp-tbar" style="background:#e0dcf8;border-color:#c0b8e8"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#e0dcf8;color:#08082c"><div><span style="color:#1d4ed8">$</span> <span style="color:#08082c">pip install nsb-client</span></div><div style="color:#7080c0">Successfully installed nsb-client-0.4.2</div><div style="color:#7c3aed;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f6f8ff;border-color:#c0b8e8;color:#08082c">
+    <div class="card-name" style="color:#08082c">Sky Blue × Lavender</div>
+    <div class="card-desc" style="color:#405090">L2 + L3. Blue for primary CTAs, violet for success/highlights. Analogous cool pair — cohesive, modern, academic-meets-creative.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f6f8ff;border:1px solid #c0b8e8"></div>
+      <div class="pc" style="background:#e0dcf8"></div>
+      <div class="pc" style="background:#c0b8e8"></div>
+      <div class="pc" style="background:#1d4ed8" title="#1d4ed8 — Blue (L2)"></div>
+      <div class="pc" style="background:#7c3aed" title="#7c3aed — Purple (L3)"></div>
+      <div class="pc" style="background:#08082c" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#1d4ed818;color:#1d4ed8">L2 Blue</span>
+      <span class="tag" style="background:#7c3aed18;color:#7c3aed">L3 Purple</span>
+      <span class="tag" style="background:#c0c4e8;color:#405090">Analogous</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LM3: SUNSET × CORAL (L4 + L5) ─── -->
+<div class="card" id="clm3" onclick="pick('lm3','#ea580c','Sunset × Coral')" style="border-color:#f0c8b8">
+  <div class="star-badge" style="background:linear-gradient(90deg,#ea580c,#dc2626);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#fff8f4">
+    <div class="mp-nav" style="background:#fff8f4ee;border-color:#f0c0a8">
+      <div class="mp-logo" style="color:#ea580c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#7a4030">Get Started</span><span class="mp-link" style="color:#7a4030">Docs</span><span class="mp-link" style="color:#7a4030">Community</span></div>
+      <span class="mp-cta" style="background:#ea580c;color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 60% 50% at 25% 0%,#ea580c0d 0%,transparent 55%),radial-gradient(ellipse 55% 40% at 75% 10%,#dc26260b 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#ea580c18;border:1px solid #ea580c30;color:#ea580c"><div class="mp-dot" style="background:#dc2626"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#1c0400">Bridge your <span style="background:linear-gradient(90deg,#ea580c,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#dc2626">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#7a4030">NSB connects network simulators. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#ea580c;color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#1c0400;border-color:#f0c0a8;background:#fae0d0">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#f0c0a8">
+        <div class="mp-tbar" style="background:#fae0d0;border-color:#f0c0a8"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#27c93f"></div></div></div>
+        <div class="mp-tbody" style="background:#fae0d0;color:#1c0400"><div><span style="color:#ea580c">$</span> <span style="color:#1c0400">pip install nsb-client</span></div><div style="color:#a06050">Successfully installed nsb-client-0.4.2</div><div style="color:#dc2626;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#fff8f4;border-color:#f0c0a8;color:#1c0400">
+    <div class="card-name" style="color:#1c0400">Sunset Orange × Coral Red</div>
+    <div class="card-desc" style="color:#7a4030">L4 + L5. Warm orange for primary, red for urgency/alerts. Fiery analogous pair — bold, high-energy, absolutely unforgettable.</div>
+    <div class="palette">
+      <div class="pc" style="background:#fff8f4;border:1px solid #f0c0a8"></div>
+      <div class="pc" style="background:#fae0d0"></div>
+      <div class="pc" style="background:#f0c0a8"></div>
+      <div class="pc" style="background:#ea580c" title="#ea580c — Orange (L4)"></div>
+      <div class="pc" style="background:#dc2626" title="#dc2626 — Red (L5)"></div>
+      <div class="pc" style="background:#1c0400" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#ea580c18;color:#ea580c">L4 Orange</span>
+      <span class="tag" style="background:#dc262618;color:#dc2626">L5 Coral</span>
+      <span class="tag" style="background:#f0c8b8;color:#7a4030">Fire</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LM4: NSB LOGO INSPIRED (Dark Blue + Red bridge + Teal + Yellow) ─── -->
+<div class="card" id="clm4" onclick="pick('lm4','#023672','NSB Logo Combo')" style="border-color:#bec8d8">
+  <div class="star-badge" style="background:linear-gradient(90deg,#023672,#DE344A,#FDD04A);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f8fafc">
+    <div class="mp-nav" style="background:#f8fafcee;border-color:#c8d0e4">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#023672,#DE344A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#4a7ca8">Get Started</span><span class="mp-link" style="color:#4a7ca8">Docs</span><span class="mp-link" style="color:#4a7ca8">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#023672,#DE344A);color:#fff;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#0236720c 0%,#DE344A0a 50%,#FDD04A08 100%)">
+      <div class="mp-badge" style="background:#DE344A15;border:1px solid #DE344A30;color:#DE344A"><div class="mp-dot" style="background:#FDD04A"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#030c18">Bridge your <span style="background:linear-gradient(135deg,#023672 0%,#DE344A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#4a7ca8">NSB connects network simulators. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#023672,#DE344A);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#030c18;border-color:#c8d0e4;background:#e4ecf6">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#c8d0e4">
+        <div class="mp-tbar" style="background:#e4ecf6;border-color:#c8d0e4"><div class="mp-tdots"><div class="mp-td" style="background:#023672"></div><div class="mp-td" style="background:#DE344A"></div><div class="mp-td" style="background:#FDD04A"></div></div></div>
+        <div class="mp-tbody" style="background:#e4ecf6;color:#030c18"><div><span style="color:#023672">$</span> <span style="color:#030c18">pip install nsb-client</span></div><div style="color:#5a7cb0">Successfully installed nsb-client-0.4.2</div><div style="color:#DE344A;font-weight:600">🎉  Simulation running — 2 clients active</div><div style="color:#FDD04A">✦ Yellow bird connected</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f8fafc;border-color:#c8d0e4;color:#030c18">
+    <div class="card-name" style="color:#030c18">NSB Logo Combo <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#02367218;color:#023672;border:1px solid #02367230;padding:2px 6px;border-radius:3px">LOGO COLORS</span></div>
+    <div class="card-desc" style="color:#4a7ca8">Dark Blue (#023672) + Red bridge (#DE344A) + Cyan (#3CA4C6) + Bird Yellow (#FDD04A). Exact brand colors from NSB logo with perfect light mode contrast.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f8fafc;border:1px solid #c8d0e4"></div>
+      <div class="pc" style="background:#e4ecf6"></div>
+      <div class="pc" style="background:#023672" title="#023672 — Dark Blue"></div>
+      <div class="pc" style="background:#DE344A" title="#DE344A — Bridge Red"></div>
+      <div class="pc" style="background:#3CA4C6" title="#3CA4C6 — Cyan"></div>
+      <div class="pc" style="background:#FDD04A" title="#FDD04A — Bird Yellow"></div>
+      <div class="pc" style="background:#030c18" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#02367218;color:#023672">Dark Blue</span>
+      <span class="tag" style="background:#DE344A18;color:#DE344A">Red Bridge</span>
+      <span class="tag" style="background:#3CA4C618;color:#3CA4C6">Cyan</span>
+      <span class="tag" style="background:#FDD04A18;color:#FDD04A">Yellow</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LM5: CRIMSON BRIDGE × NAVY LIGHT (Logo-accurate light version) ─── -->
+<div class="card" id="clm5" onclick="pick('lm5','#991b1b','Crimson × Navy Light')" style="border-color:#f0bcc8">
+  <div class="star-badge" style="background:linear-gradient(90deg,#991b1b,#3d5fb8);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#fef8f8">
+    <div class="mp-nav" style="background:#fef8f8ee;border-color:#e8b4bc">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#3d5fb8,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#5a4050">Get Started</span><span class="mp-link" style="color:#5a4050">Docs</span><span class="mp-link" style="color:#5a4050">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#3d5fb8,#dc2626);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 70% 50% at 30% 0%,#dc26260c 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#3d5fb80a 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#dc262615;border:1px solid #dc262630;color:#991b1b"><div class="mp-dot" style="background:#dc2626"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#2a0c0c">Bridge your <span style="background:linear-gradient(90deg,#3d5fb8,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#dc2626">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#5a4050">NSB connects network simulators. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#3d5fb8,#dc2626);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#2a0c0c;border-color:#e8b4bc;background:#ffe4e0">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#e8b4bc">
+        <div class="mp-tbar" style="background:#ffe4e0;border-color:#e8b4bc"><div class="mp-tdots"><div class="mp-td" style="background:#dc2626"></div><div class="mp-td" style="background:#ea580c"></div><div class="mp-td" style="background:#15803d"></div></div></div>
+        <div class="mp-tbody" style="background:#ffe4e0;color:#2a0c0c"><div><span style="color:#3d5fb8">$</span> <span style="color:#2a0c0c">pip install nsb-client</span></div><div style="color:#7a5a60">Successfully installed nsb-client-0.4.2</div><div style="color:#dc2626;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#fef8f8;border-color:#e8b4bc;color:#2a0c0c">
+    <div class="card-name" style="color:#2a0c0c">Crimson Bridge × Navy Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#dc262615;color:#dc2626;border:1px solid #dc262630;padding:2px 6px;border-radius:3px">LOGO</span></div>
+    <div class="card-desc" style="color:#5a4050">Light mode companion to dark Bridge Red × Navy. Crimson + Navy Blue with gradient buttons. Perfect for logo brand consistency across modes.</div>
+    <div class="palette">
+      <div class="pc" style="background:#fef8f8;border:1px solid #e8b4bc"></div>
+      <div class="pc" style="background:#ffe4e0"></div>
+      <div class="pc" style="background:#3d5fb8" title="#3d5fb8 — Navy Blue"></div>
+      <div class="pc" style="background:#dc2626" title="#dc2626 — Crimson Red"></div>
+      <div class="pc" style="background:#2a0c0c" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#dc262615;color:#dc2626">Crimson</span>
+      <span class="tag" style="background:#3d5fb815;color:#3d5fb8">Navy</span>
+      <span class="tag" style="background:#e8b4bc;color:#5a4050">Logo Light</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LM6: CYAN GRADIENT × GOLD LIGHT ─── -->
+<div class="card" id="clm6" onclick="pick('lm6','#0891b2','Cyan × Gold Light')" style="border-color:#c0e4e8">
+  <div class="star-badge" style="background:linear-gradient(90deg,#0891b2,#d97706);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f0fbfd">
+    <div class="mp-nav" style="background:#f0fbfdee;border-color:#b8dce4">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#0891b2,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#20636c">Get Started</span><span class="mp-link" style="color:#20636c">Docs</span><span class="mp-link" style="color:#20636c">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#0891b2,#d97706);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#0891b20d 0%,#d977060c 100%)">
+      <div class="mp-badge" style="background:#0891b215;border:1px solid #0891b230;color:#0891b2"><div class="mp-dot" style="background:#d97706"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#0f4c54">Bridge your <span style="background:linear-gradient(90deg,#0891b2,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#d97706">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#20636c">NSB connects network simulators. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#0891b2,#d97706);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#0f4c54;border-color:#b8dce4;background:#d8f0f8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#b8dce4">
+        <div class="mp-tbar" style="background:#d8f0f8;border-color:#b8dce4"><div class="mp-tdots"><div class="mp-td" style="background:#0891b2"></div><div class="mp-td" style="background:#d97706"></div><div class="mp-td" style="background:#059669"></div></div></div>
+        <div class="mp-tbody" style="background:#d8f0f8;color:#0f4c54"><div><span style="color:#0891b2">$</span> <span style="color:#0f4c54">pip install nsb-client</span></div><div style="color:#4a8090">Successfully installed nsb-client-0.4.2</div><div style="color:#d97706;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f0fbfd;border-color:#b8dce4;color:#0f4c54">
+    <div class="card-name" style="color:#0f4c54">Cyan Gradient × Gold Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#0891b215;color:#0891b2;border:1px solid #0891b230;padding:2px 6px;border-radius:3px">GRADIENT</span></div>
+    <div class="card-desc" style="color:#20636c">Light version of cyan-gold gradient combo. Teal (#0891b2) transitions to Amber (#d97706). Fresh, warm, perfect for action-focused interfaces.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f0fbfd;border:1px solid #b8dce4"></div>
+      <div class="pc" style="background:#d8f0f8"></div>
+      <div class="pc" style="background:#0891b2" title="#0891b2 — Cyan"></div>
+      <div class="pc" style="background:#d97706" title="#d97706 — Amber"></div>
+      <div class="pc" style="background:#0f4c54" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#0891b215;color:#0891b2">Cyan</span>
+      <span class="tag" style="background:#d9770615;color:#d97706">Amber</span>
+      <span class="tag" style="background:#c0e4e8;color:#20636c">Gradient</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LM7: RED ALERT GRADIENT LIGHT ─── -->
+<div class="card" id="clm7" onclick="pick('lm7','#7c2d12','Red Alert Gradient')" style="border-color:#f0d4c8">
+  <div class="star-badge" style="background:linear-gradient(90deg,#7c2d12,#dc2626);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#fff5f2">
+    <div class="mp-nav" style="background:#fff5f2ee;border-color:#f0c8bc">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#7c2d12,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#704030">Get Started</span><span class="mp-link" style="color:#704030">Docs</span><span class="mp-link" style="color:#704030">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#7c2d12,#b91c1c);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 70% 50% at 30% 0%,#dc26260c 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#7c2d120a 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#dc262615;border:1px solid #dc262630;color:#7c2d12"><div class="mp-dot" style="background:#dc2626"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#28080c">Bridge your <span style="background:linear-gradient(90deg,#dc2626,#7c2d12);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#7c2d12">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#704030">NSB connects network simulators. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#7c2d12,#b91c1c);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#28080c;border-color:#f0c8bc;background:#ffe0d8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#f0c8bc">
+        <div class="mp-tbar" style="background:#ffe0d8;border-color:#f0c8bc"><div class="mp-tdots"><div class="mp-td" style="background:#7c2d12"></div><div class="mp-td" style="background:#d97706"></div><div class="mp-td" style="background:#059669"></div></div></div>
+        <div class="mp-tbody" style="background:#ffe0d8;color:#28080c"><div><span style="color:#7c2d12">$</span> <span style="color:#28080c">pip install nsb-client</span></div><div style="color:#8a5c50">Successfully installed nsb-client-0.4.2</div><div style="color:#dc2626;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#fff5f2;border-color:#f0d4c8;color:#28080c">
+    <div class="card-name" style="color:#28080c">Red Alert Gradient <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#dc262615;color:#dc2626;border:1px solid #dc262630;padding:2px 6px;border-radius:3px">ALERT</span></div>
+    <div class="card-desc" style="color:#704030">Warm red gradient from Burnt Sienna to Crimson. Great for highlighting bridge events, errors, and alerts. Bold and commanding in light mode.</div>
+    <div class="palette">
+      <div class="pc" style="background:#fff5f2;border:1px solid #f0d4c8"></div>
+      <div class="pc" style="background:#ffe0d8"></div>
+      <div class="pc" style="background:#7c2d12" title="#7c2d12 — Burnt Sienna"></div>
+      <div class="pc" style="background:#b91c1c" title="#b91c1c — Dark Red"></div>
+      <div class="pc" style="background:#dc2626" title="#dc2626 — Crimson"></div>
+      <div class="pc" style="background:#28080c" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#dc262615;color:#dc2626">Red</span>
+      <span class="tag" style="background:#7c2d1215;color:#7c2d12">Gradient</span>
+      <span class="tag" style="background:#f0d4c8;color:#704030">Alert</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LM8: BLUE CYAN TEAL TRIO LIGHT (Logo colors light version) ─── -->
+<div class="card" id="clm8" onclick="pick('lm8','#3d5fb8','Blue × Cyan × Green Trio Light')" style="border-color:#c0d4e8">
+  <div class="star-badge" style="background:linear-gradient(90deg,#3d5fb8,#0891b2,#10b981);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f4f8fe">
+    <div class="mp-nav" style="background:#f4f8feee;border-color:#bccce0">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#3d5fb8,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#405090">Get Started</span><span class="mp-link" style="color:#405090">Docs</span><span class="mp-link" style="color:#405090">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#3d5fb8,#0891b2);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#3d5fb80d 0%,#0891b20a 50%,#10b9810a 100%)">
+      <div class="mp-badge" style="background:#0891b215;border:1px solid #0891b230;color:#0891b2"><div class="mp-dot" style="background:#10b981"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#04101e">Bridge your <span style="background:linear-gradient(90deg,#3d5fb8,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#0891b2">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#405090">NSB connects network simulators. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#3d5fb8,#0891b2);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#04101e;border-color:#bccce0;background:#dce8f8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#bccce0">
+        <div class="mp-tbar" style="background:#dce8f8;border-color:#bccce0"><div class="mp-tdots"><div class="mp-td" style="background:#3d5fb8"></div><div class="mp-td" style="background:#0891b2"></div><div class="mp-td" style="background:#10b981"></div></div></div>
+        <div class="mp-tbody" style="background:#dce8f8;color:#04101e"><div><span style="color:#3d5fb8">$</span> <span style="color:#04101e">pip install nsb-client</span></div><div style="color:#6880b0">Successfully installed nsb-client-0.4.2</div><div style="color:#10b981;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f4f8fe;border-color:#bccce0;color:#04101e">
+    <div class="card-name" style="color:#04101e">Blue × Cyan × Green Trio Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#0891b215;color:#0891b2;border:1px solid #0891b230;padding:2px 6px;border-radius:3px">TRIO</span></div>
+    <div class="card-desc" style="color:#405090">Light mode NSB logo trio: Navy Blue (#3d5fb8) + Teal Cyan (#0891b2) + Emerald Green (#10b981). Matches dark Blue×Cyan×Gold with fresh green success state.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f4f8fe;border:1px solid #bccce0"></div>
+      <div class="pc" style="background:#dce8f8"></div>
+      <div class="pc" style="background:#3d5fb8" title="#3d5fb8 — Navy Blue"></div>
+      <div class="pc" style="background:#0891b2" title="#0891b2 — Cyan"></div>
+      <div class="pc" style="background:#10b981" title="#10b981 — Green (Success)"></div>
+      <div class="pc" style="background:#04101e" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#3d5fb815;color:#3d5fb8">Navy</span>
+      <span class="tag" style="background:#0891b215;color:#0891b2">Cyan</span>
+      <span class="tag" style="background:#10b98115;color:#10b981">Green</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LM9: NAVY × YELLOW × BLUE (Mentor's requested light mode) ─── -->
+<div class="card" id="clm9" onclick="pick('lm9','#3d5fb8','Navy × Yellow × Blue')" style="border-color:#c8d4e4">
+  <div class="star-badge" style="background:linear-gradient(90deg,#3d5fb8,#d89e04,#0891b2);color:#000">★ Favourite</div>
+  <div class="mini-preview" style="background:#f8fafe">
+    <div class="mp-nav" style="background:#f8fafe;border-color:#c0cce8">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#3d5fb8,#d89e04);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#3a5090">Get Started</span><span class="mp-link" style="color:#3a5090">Docs</span><span class="mp-link" style="color:#3a5090">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#3d5fb8,#d89e04);color:#fff;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#3d5fb80c 0%,#d89e040a 50%,#0891b20a 100%)">
+      <div class="mp-badge" style="background:#d89e0415;border:1px solid #d89e0430;color:#d89e04"><div class="mp-dot" style="background:#d89e04"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#0a1428">Bridge your <span style="background:linear-gradient(90deg,#3d5fb8,#d89e04);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#3a5090">NSB connects network simulators with style. Fast. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#3d5fb8,#d89e04);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#0a1428;border-color:#c0cce8;background:#dce8f8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#c0cce8">
+        <div class="mp-tbar" style="background:#dce8f8;border-color:#c0cce8"><div class="mp-tdots"><div class="mp-td" style="background:#3d5fb8"></div><div class="mp-td" style="background:#d89e04"></div><div class="mp-td" style="background:#0891b2"></div></div></div>
+        <div class="mp-tbody" style="background:#dce8f8;color:#0a1428"><div><span style="color:#3d5fb8">$</span> <span style="color:#0a1428">pip install nsb-client</span></div><div style="color:#6880b0">Successfully installed nsb-client-0.4.2</div><div style="color:#d89e04;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f8fafe;border-color:#c0cce8;color:#0a1428">
+    <div class="card-name" style="color:#0a1428">Navy × Yellow × Blue <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#d89e0415;color:#d89e04;border:1px solid #d89e0430;padding:2px 6px;border-radius:3px">MENTOR</span></div>
+    <div class="card-desc" style="color:#3a5090">Light mode mentor choice: Navy Blue (#3d5fb8) + Bright Yellow (#d89e04) + Teal Cyan (#0891b2). Modern, professional, eye-catching for light interfaces.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f8fafe;border:1px solid #c0cce8"></div>
+      <div class="pc" style="background:#dce8f8"></div>
+      <div class="pc" style="background:#3d5fb8" title="#3d5fb8 — Navy Blue"></div>
+      <div class="pc" style="background:#d89e04" title="#d89e04 — Bright Yellow"></div>
+      <div class="pc" style="background:#0891b2" title="#0891b2 — Teal Cyan"></div>
+      <div class="pc" style="background:#0a1428" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#3d5fb815;color:#3d5fb8">Navy</span>
+      <span class="tag" style="background:#d89e0415;color:#d89e04">Yellow</span>
+      <span class="tag" style="background:#0891b215;color:#0891b2">Cyan</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</div>
+
+<!-- /page-wrap -->
+
+<!-- ═══ COMPARE STRIP ═══ -->
+<div class="compare-strip" id="cstrip">
+  <span class="cs-label">★ Favourites</span>
+  <div class="cs-items" id="cstrip-items"></div>
+  <button class="cs-clear" onclick="clearAll()">✕ clear</button>
+</div>
+
+<script>
+const names={
+  d1:'Emerald — Current',d2:'Navy Blue',d3:'Gold — Graphite',d4:'Monochrome',d5:'NSB Brand Inspired',d6:'Cyber Network',
+  dm1:'Emerald × Gold',dm2:'Navy × Cyber',dm3:'NSB Brand × Gold',dm4:'Mono × Emerald',dm5:'Bridge Red × Navy',dm6:'Cyan Gradient × Gold',dm7:'Red Bridge Gradient',dm8:'Blue × Cyan × Gold Trio',dm9:'Navy × Gold × Orange',
+  l1:'Fresh Green',l2:'Sky Blue',l3:'Lavender Purple',l4:'Sunset Orange',l5:'Coral Red',l6:'Turquoise Cyan',
+  lm1:'Green × Cyan',lm2:'Blue × Lavender',lm3:'Sunset × Coral',lm4:'NSB Logo Combo',lm5:'Crimson × Navy Light',lm6:'Cyan × Gold Light',lm7:'Red Alert Gradient',lm8:'Blue × Cyan × Green Trio Light',lm9:'Navy × Yellow × Blue'
+};
+const colors={
+  d1:'#00d97e',d2:'#60A5FA',d3:'#f5c842',d4:'#ffffff',d5:'#023672',d6:'#22d3ee',
+  dm1:'#00d97e',dm2:'#60A5FA',dm3:'#38bdf8',dm4:'#ffffff',dm5:'#ef4444',dm6:'#22d3ee',dm7:'#dc2626',dm8:'#335ac0',dm9:'#335ac0',
+  l1:'#15803d',l2:'#1d4ed8',l3:'#7c3aed',l4:'#ea580c',l5:'#dc2626',l6:'#0e7490',
+  lm1:'#15803d',lm2:'#1d4ed8',lm3:'#ea580c',lm4:'#023672',lm5:'#991b1b',lm6:'#0891b2',lm7:'#7c2d12',lm8:'#3d5fb8',lm9:'#3d5fb8'
+};
+let picked=[];
+function pick(id,col,name){
+  const card=document.getElementById('c'+id);
+  if(card.classList.contains('picked')){
+    card.classList.remove('picked');
+    picked=picked.filter(x=>x!==id);
+  } else {
+    if(picked.length>=2){const old=picked.shift();document.getElementById('c'+old).classList.remove('picked');}
+    card.classList.add('picked');
+    picked.push(id);
+  }
+  render();
+}
+function render(){
+  const strip=document.getElementById('cstrip');
+  const items=document.getElementById('cstrip-items');
+  if(picked.length){
+    strip.classList.add('show');
+    items.innerHTML=picked.map(id=>`<div class="cs-item"><div class="cs-dot" style="background:${colors[id]}"></div>${names[id]}</div>`).join('');
+  } else {
+    strip.classList.remove('show');
+  }
+}
+function clearAll(){
+  picked.forEach(id=>document.getElementById('c'+id).classList.remove('picked'));
+  picked=[];render();
+}
+function jumpTo(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+}
+// sidebar highlight on scroll
+const secs=['sec-ds','sec-dm','sec-ls','sec-lm'];
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const map={'sec-ds':'sbl-ds','sec-dm':'sbl-dm','sec-ls':'sbl-ls','sec-lm':'sbl-lm'};
+      document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+      const el=document.getElementById(map[e.target.id]);
+      if(el)el.classList.add('active');
+    }
+  });
+},{threshold:0.25,rootMargin:'-58px 0px -50% 0px'});
+secs.forEach(s=>{const el=document.getElementById(s);if(el)obs.observe(el);});
+</script>
+</body>
+</html>
