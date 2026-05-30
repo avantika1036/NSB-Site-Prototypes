@@ -89,18 +89,144 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
 /* ── CARD ── */
 *{box-sizing:border-box}
 .card{
-  border-radius:13px;overflow:hidden;border:1.5px solid #1e2430;
-  cursor:pointer;transition:all 0.22s;position:relative;
+  border-radius:13px;overflow:hidden;border:1.5px solid #2e3a50;
+  cursor:pointer;transition:transform 0.22s,box-shadow 0.22s,border-color 0.22s;position:relative;
   width:100%;max-width:100%;min-width:0;max-height:100%;
 }
-.card:hover{transform:translateY(-3px);box-shadow:0 14px 48px rgba(0,0,0,0.45);border-color:#2e3a50}
-.card.picked{border-width:2px}
-.star-badge{
-  position:absolute;top:9px;right:9px;z-index:10;
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 48px rgba(0,0,0,0.45);border-color:#485a7c}
+.card.picked{border-width:2px;box-shadow:0 0 0 2px rgba(255,255,255,0.08)}
+
+/* ── FAV BUTTON (replaces star-badge) ── */
+.fav-btn{
+  position:absolute;top:9px;right:9px;z-index:20;
   font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
-  padding:3px 8px;border-radius:4px;display:none;
+  padding:4px 9px;border-radius:5px;
+  border:1.5px solid rgba(255,255,255,0.15);
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
+  color:rgba(255,255,255,0.7);
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;gap:4px;
+  opacity:0;pointer-events:none;
 }
-.card.picked .star-badge{display:block}
+.card:hover .fav-btn,.card.picked .fav-btn{opacity:1;pointer-events:auto}
+.fav-btn:hover{background:rgba(0,0,0,0.75);color:#fff;border-color:rgba(255,255,255,0.3)}
+.card.picked .fav-btn{background:rgba(0,0,0,0.8);border-color:rgba(255,255,255,0.5);color:#fff}
+.fav-btn .fav-star{transition:transform 0.2s}
+.card.picked .fav-btn .fav-star{color:#fbbf24;transform:scale(1.2)}
+
+/* ── EXPAND BUTTON ── */
+.expand-btn{
+  position:absolute;top:9px;right:88px;z-index:20;
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  padding:4px 9px;border-radius:5px;
+  border:1.5px solid rgba(255,255,255,0.15);
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
+  color:rgba(255,255,255,0.7);
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;gap:4px;
+  opacity:0;pointer-events:none;
+}
+.card:hover .expand-btn{opacity:1;pointer-events:auto}
+.expand-btn:hover{background:rgba(0,0,0,0.75);color:#fff;border-color:rgba(255,255,255,0.3)}
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(4,6,10,0.85);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  opacity:0;pointer-events:none;transition:opacity 0.25s ease;
+}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+
+.modal-box{
+  background:#0d1117;border:1px solid #2a3040;border-radius:18px;
+  width:min(900px,96vw);max-height:90vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  transform:scale(0.92) translateY(16px);
+  transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 32px 80px rgba(0,0,0,0.7);
+}
+.modal-overlay.open .modal-box{transform:scale(1) translateY(0)}
+
+/* modal header bar */
+.modal-header{
+  display:flex;align-items:center;padding:14px 20px;
+  border-bottom:1px solid #1e2430;gap:12px;flex-shrink:0;
+}
+.modal-scheme-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.modal-scheme-name{font-size:14px;font-weight:700;color:#e8eaf0;flex:1}
+.modal-mode-chip{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;background:#1e2430;color:#6a7890}
+.modal-fav-btn{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  padding:5px 14px;border-radius:6px;border:1.5px solid #2e3a50;
+  background:#0e1218;color:#9aa3b5;cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;gap:6px;
+}
+.modal-fav-btn:hover{border-color:#4a5870;color:#e8eaf0}
+.modal-fav-btn.active{border-color:#fbbf24;background:#fbbf2415;color:#fbbf24}
+.modal-close{
+  width:28px;height:28px;border-radius:6px;border:1px solid #1e2430;
+  background:#0e1218;color:#6a7890;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;
+}
+.modal-close:hover{background:#1e2430;color:#e8eaf0}
+
+/* modal body */
+.modal-body{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* big preview */
+.modal-preview{flex:1.6;overflow:hidden;position:relative}
+.modal-preview-inner{
+  width:100%;height:100%;display:flex;flex-direction:column;
+}
+/* scale-up the mini-preview inside modal */
+.modal-preview .mini-preview{
+  height:100%;transform-origin:top left;
+}
+
+/* info panel */
+.modal-info{
+  width:290px;flex-shrink:0;padding:22px 20px;overflow-y:auto;
+  border-left:1px solid #1e2430;display:flex;flex-direction:column;gap:18px;
+}
+.modal-info-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:#cdcdcd;margin-bottom:8px}
+.modal-palette-big{display:flex;flex-direction:column;gap:6px}
+.modal-pc-row{display:flex;align-items:center;gap:10px}
+.modal-pc-swatch{width:36px;height:36px;border-radius:7px;flex-shrink:0;border:1px solid rgba(255,255,255,0.06)}
+.modal-pc-hex{font-family:'JetBrains Mono',monospace;font-size:11px;color:#9aa3b5;font-weight:500}
+.modal-pc-role{font-size:10px;color:#4a5870;margin-top:2px}
+.modal-tags{display:flex;gap:5px;flex-wrap:wrap}
+.modal-tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px}
+.modal-desc-text{font-size:12px;color:#9aa3b5;line-height:1.65}
+
+/* nav arrows */
+.modal-nav{display:flex;gap:8px}
+.modal-nav-btn{
+  flex:1;padding:8px;border-radius:7px;border:1px solid #6b7894;
+  background:#2d3a4d;color:#5c82c4e1;cursor:pointer;font-size:12px;
+  transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10px; color:#d5d5d6;
+}
+.modal-nav-btn:hover{background:#1e2430;color:#e8eaf0;border-color:#2e3a50}
+.modal-nav-btn:disabled{opacity:0.3;cursor:not-allowed}
+
+/* modal info scrollbar */
+.modal-info::-webkit-scrollbar{width:3px}
+.modal-info::-webkit-scrollbar-track{background:transparent}
+.modal-info::-webkit-scrollbar-thumb{background:#1e2430;border-radius:2px}
+
+/* keyboard hint */
+.modal-kb-hint{
+  font-family:'JetBrains Mono',monospace;font-size:8px;color:#2e3a50;
+  text-align:center;padding:6px 0 2px;letter-spacing:0.5px;
+}
+
+/* card counter pill in strip */
+.cs-count{
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  background:#00d97e15;border:1px solid #00d97e30;color:#00d97e;
+  padding:3px 8px;border-radius:12px;white-space:nowrap;flex-shrink:0;
+}
 
 /* ── MINI PREVIEW ── */
 .mini-preview{width:100%;height:260px;display:flex;flex-direction:column;overflow:hidden;position:relative}
@@ -146,23 +272,38 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
 .compare-strip{
   position:fixed;bottom:0;left:0;right:0;z-index:300;
   background:rgba(10,12,16,0.98);backdrop-filter:blur(20px);
-  border-top:1px solid #1e2430;padding:12px 36px;
-  display:flex;align-items:center;gap:14px;
+  border-top:1px solid #1e2430;padding:10px 24px;
+  display:flex;align-items:center;gap:12px;
   transform:translateY(100%);transition:transform 0.3s ease;
+  min-height:52px;
 }
 .compare-strip.show{transform:translateY(0)}
-.cs-label{font-size:12px;font-weight:700;color:#6a7890;white-space:nowrap}
-.cs-items{display:flex;gap:10px;flex:1}
-.cs-item{
-  display:flex;align-items:center;gap:8px;
-  background:#0e1218;border:1px solid #1e2430;border-radius:8px;
-  padding:7px 13px;font-size:11px;font-weight:600;color:#c8d0e0;
+.cs-label{font-size:11px;font-weight:700;color:#6a7890;white-space:nowrap;display:flex;flex-direction:column;gap:1px}
+.cs-label span{font-family:'JetBrains Mono',monospace;font-size:9px;color:#3a4860;font-weight:400}
+.cs-items{
+  display:flex;gap:7px;flex:1;overflow-x:auto;align-items:center;
+  scrollbar-width:none;padding-bottom:2px;
 }
-.cs-dot{width:7px;height:7px;border-radius:50%}
+.cs-items::-webkit-scrollbar{display:none}
+.cs-item{
+  display:flex;align-items:center;gap:7px;
+  background:#0e1218;border:1px solid #1e2430;border-radius:7px;
+  padding:5px 10px;font-size:10px;font-weight:600;color:#c8d0e0;
+  white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all 0.15s;
+}
+.cs-item:hover{background:#1a2030;border-color:#2e3a50}
+.cs-item .cs-remove{color:#3a4860;margin-left:4px;font-size:10px;transition:color 0.1s}
+.cs-item:hover .cs-remove{color:#c8d0e0}
+.cs-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cs-count{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  background:#00d97e15;border:1px solid #00d97e30;color:#00d97e;
+  padding:3px 8px;border-radius:12px;white-space:nowrap;flex-shrink:0;
+}
 .cs-clear{
-  font-family:'JetBrains Mono',monospace;font-size:11px;color:#3a4860;
-  background:none;border:1px solid #1e2430;padding:5px 10px;border-radius:6px;
-  cursor:pointer;transition:all 0.15s;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:#3a4860;
+  background:none;border:1px solid #1e2430;padding:4px 10px;border-radius:6px;
+  cursor:pointer;transition:all 0.15s;flex-shrink:0;
 }
 .cs-clear:hover{color:#e8eaf0;border-color:#2e3a50}
 
@@ -189,7 +330,7 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
   </div>
   <div class="shell-divider"></div>
   <span class="shell-title">Color Scheme Showcase — GSoC 2026 · For review</span>
-  <div class="shell-count">30 Schemes · 4 Sections</div>
+  <div class="shell-count">42 Schemes · 4 Sections</div>
 </nav>
 
 <div class="page-wrap">
@@ -205,7 +346,7 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
   <div class="sb-link" id="sbl-dm" onclick="jumpTo('sec-dm')">
     <div class="sb-dot" style="background:#2e3a50"></div>
     Multi Color
-    <span class="sb-chip" style="background:#ffffff10;color:#6a7890">9</span>
+    <span class="sb-chip" style="background:#ffffff10;color:#6a7890">15</span>
   </div>
 
   <div class="sb-group-label" style="margin-top:12px">☀️ Light Mode</div>
@@ -217,12 +358,12 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
   <div class="sb-link" id="sbl-lm" onclick="jumpTo('sec-lm')">
     <div class="sb-dot" style="background:#c8d4e4"></div>
     Multi Color
-    <span class="sb-chip" style="background:#00000012;color:#8090a8">9</span>
+    <span class="sb-chip" style="background:#00000012;color:#8090a8">15</span>
   </div>
 
   <div style="margin:24px 18px 0;padding:14px;background:#0e1218;border:1px solid #1e2430;border-radius:8px">
     <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#3a4860;margin-bottom:8px">How to use</div>
-    <div style="font-size:11px;color:#5a6880;line-height:1.7">Click any card to <span style="color:#00d97e">★ favourite</span> it.<br>Up to 2 shown in the comparison strip below.</div>
+    <div style="font-size:11px;color:#5a6880;line-height:1.7">Hover → click <span style="color:#00d97e">★ Fav</span> to favourite.<br>Favourite <span style="color:#e8eaf0">as many as you want.</span><br><br>Click <span style="color:#c8d0e0">⤢ Expand</span> or the card body to open big preview.</div>
   </div>
 </aside>
 
@@ -379,7 +520,7 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
     </div>
     <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#ffffff07 0%,transparent 70%)">
       <div class="mp-badge" style="background:#ffffff18;border:1px solid #ffffff30;color:#ccc"><div class="mp-dot" style="background:#fff"></div>v0.4.2 — Now with ns-3 bridge support</div>
-      <div class="mp-h1" style="color:#ffffff">Bridge your <span style="text-decoration:underline;text-underline-offset:3px">simulators</span><br>with the real world</div>
+      <div class="mp-h1" style="color:#ffffff">Bridge your <span style="text-decoration:underline;text-underline-offset:3px; color:#d6d5d5bd">simulators</span><br>with the real world</div>
       <div class="mp-sub" style="color:#777">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
       <div class="mp-btns">
         <span class="mp-bp" style="background:#ffffff;color:#000">⚡ Quickstart — 5 min</span>
@@ -504,7 +645,7 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
 ══════════════════════════════ -->
 <div class="sec-header" id="sec-dm">
   <div class="sec-mode-tag"><div class="sec-mode-dot" style="background:#e8eaf0;box-shadow:0 0 6px #e8eaf060"></div>Dark Mode · Multi Color</div>
-  <div class="sec-h2" style="color:#e8eaf0">8 Multi-Accent Dark Combos with Gradients</div>
+  <div class="sec-h2" style="color:#e8eaf0">15 Multi-Accent Dark Combos with Gradients</div>
   <div class="sec-desc">Smart combinations using gradients for depth and visual hierarchy — plus logo-accurate color pairs from your NSB bridge design.</div>
 </div>
 
@@ -649,7 +790,7 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
     </div>
     <div class="mp-hero" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,#00d97e07 0%,transparent 70%)">
       <div class="mp-badge" style="background:#ffffff15;border:1px solid #ffffff25;color:#aaa"><div class="mp-dot" style="background:#00d97e"></div>v0.4.2 — Now with ns-3 bridge support</div>
-      <div class="mp-h1" style="color:#ffffff">Bridge your <span style="color:#ffffff;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#00d97e">simulators</span><br>with the real world</div>
+      <div class="mp-h1" style="color:#ffffff">Bridge your <span style="color:#00d97e;">simulators</span><br>with the real world</div>
       <div class="mp-sub" style="color:#666">NSB connects network simulators like ns-3 and OMNeT++ to real networks.</div>
       <div class="mp-btns">
         <span class="mp-bp" style="background:#ffffff;color:#000">⚡ Quickstart — 5 min</span>
@@ -888,6 +1029,254 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
       <span class="tag" style="background:#335ac015;color:#335ac0">Navy</span>
       <span class="tag" style="background:#f5c84220;color:#f5c842">Gold</span>
       <span class="tag" style="background:#f9731620;color:#f97316">Orange</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM10: PURPLE × CYAN GLASSMORPHISM (Futuristic cyber dark) ─── -->
+<div class="card" id="cdm10" onclick="pick('dm10','#312e81','Purple × Cyan Glassmorphism')" >
+  <div class="star-badge" style="background:linear-gradient(90deg,#7c3aed,#06b6d4);color:#fff;box-shadow:0 0 20px rgba(124,58,237,0.3)">★ Cyberpunk</div>
+  <div class="mini-preview" style="background:radial-gradient(circle at top left,#312e81 0%,transparent 30%),radial-gradient(circle at bottom right,#0891b2 0%,transparent 30%),#050816;backdrop-filter:blur(10px)">
+    <div class="mp-nav" style="background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border-color:rgba(255,255,255,0.08)">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#7c3aed,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#b6c2d9">Get Started</span><span class="mp-link" style="color:#b6c2d9">Docs</span><span class="mp-link" style="color:#b6c2d9">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#7c3aed,#60a5fa);color:#fff;box-shadow:0 0 20px rgba(124,58,237,0.4)">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(circle at top left,#312e81 0%,transparent 30%),radial-gradient(circle at bottom right,#0891b2 0%,transparent 30%),#050816">
+      <div class="mp-badge" style="background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);color:#c4b5fd"><div class="mp-dot" style="background:#7c3aed;box-shadow:0 0 10px #7c3aed"></div>v0.4.2 — Glassmorphism design</div>
+      <div class="mp-h1" style="color:#ffffff">Bridge your <span style="background:linear-gradient(90deg,#7c3aed,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#b6c2d9">NSB connects network simulators with cyber elegance. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#7c3aed,#60a5fa);color:#fff;font-weight:700;box-shadow:0 0 20px rgba(124,58,237,0.4)">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#b6c2d9;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);backdrop-filter:blur(10px)">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:rgba(255,255,255,0.1);background:rgba(0,0,0,0.2);backdrop-filter:blur(5px)">
+        <div class="mp-tbar" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.08)"><div class="mp-tdots"><div class="mp-td" style="background:#7c3aed;box-shadow:0 0 8px #7c3aed"></div><div class="mp-td" style="background:#06b6d4;box-shadow:0 0 8px #06b6d4"></div><div class="mp-td" style="background:#60a5fa;box-shadow:0 0 8px #60a5fa"></div></div></div>
+        <div class="mp-tbody" style="background:rgba(255,255,255,0.03);color:#b6c2d9"><div><span style="color:#60a5fa">$</span> <span style="color:#c4b5fd">pip install nsb-client</span></div><div style="color:#94a3b8">Successfully installed nsb-client-0.4.2</div><div style="color:#06b6d4;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:rgba(5,8,22,0.6);border-color:rgba(255,255,255,0.08);color:#b6c2d9">
+    <div class="card-name" style="color:#ffffff">Purple × Cyan Glassmorphism <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:rgba(124,58,237,0.2);color:#c4b5fd;border:1px solid rgba(124,58,237,0.3);padding:2px 6px;border-radius:3px">CYBERPUNK</span></div>
+    <div class="card-desc" style="color:#b6c2d9">Futuristic glassmorphism with Purple (#7c3aed) + Cyan (#06b6d4) neon accents. Dark navy background (#050816) with glass card layers. Modern SaaS aesthetic inspired by Vercel, Linear, Stripe.</div>
+    <div class="palette">
+      <div class="pc" style="background:#050816;border:1px solid rgba(255,255,255,0.1)"></div>
+      <div class="pc" style="background:#312e81"></div>
+      <div class="pc" style="background:#7c3aed" title="#7c3aed — Purple"></div>
+      <div class="pc" style="background:#06b6d4" title="#06b6d4 — Cyan Blue"></div>
+      <div class="pc" style="background:#60a5fa" title="#60a5fa — Light Blue"></div>
+      <div class="pc" style="background:#c4b5fd" title="#c4b5fd — Soft Lavender"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:rgba(124,58,237,0.2);color:#c4b5fd">Purple</span>
+      <span class="tag" style="background:rgba(6,182,212,0.2);color:#67e8f9">Cyan</span>
+      <span class="tag" style="background:rgba(255,255,255,0.1);color:#b6c2d9">Glass</span>
+      <span class="tag" style="background:rgba(255,255,255,0.1);color:#b6c2d9">Neon</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM11: NAVY + GOLD (Pure) DARK ─── -->
+<div class="card" id="cdm11" onclick="pick('dm11','#f5c842','Navy + Gold — Dark')">
+  <div class="star-badge" style="background:linear-gradient(90deg,#1a3a8f,#f5c842);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#0d1428">
+    <div class="mp-nav" style="background:#0d1428;border-color:#1a2845">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#1a3a8f,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#7080b0">Get Started</span><span class="mp-link" style="color:#7080b0">Docs</span><span class="mp-link" style="color:#7080b0">Community</span></div>
+      <span class="mp-cta" style="background:#f5c842;color:#070d1e;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#1a3a8f0a 0%,#f5c8420a 100%)">
+      <div class="mp-badge" style="background:#f5c84218;border:1px solid #f5c84244;color:#f5c842"><div class="mp-dot" style="background:#f5c842"></div>v0.4.2 — ns-3 support</div>
+      <div class="mp-h1" style="color:#e8eeff">Bridge your <span style="background:linear-gradient(90deg,#1a3a8f,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#7080b0">Pure Navy + Gold. Classic,clean, professional.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#1a3a8f,#f5c842);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#e8eeff;border-color:#1a2845;background:#0d1428">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#1a2845">
+        <div class="mp-tbar" style="background:#121e38;border-color:#1a2845"><div class="mp-tdots"><div class="mp-td" style="background:#1a3a8f"></div><div class="mp-td" style="background:#f5c842"></div><div class="mp-td" style="background:#60a5fa"></div></div></div>
+        <div class="mp-tbody" style="background:#0d1428;color:#7080b0"><div><span style="color:#405080">$</span> <span style="color:#f5c842">nsb_daemon</span> config.yaml</div><div style="color:#405080">[info] Daemon started</div><div style="color:#f5c842;font-weight:600">✓ Ready</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#0d1428;border-color:#1a2845;color:#e8eeff">
+    <div class="card-name" style="color:#e8eeff">Navy + Gold — Dark <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#f5c84222;color:#f5c842;border:1px solid #f5c84244;padding:2px 6px;border-radius:3px">CLASSIC</span></div>
+    <div class="card-desc" style="color:#7080b0">Deep Navy (#1a3a8f) + Gold (#f5c842) on deep background (#0d1428). Perfect balance of visibility and elegance.</div>
+    <div class="palette">
+      <div class="pc" style="background:#0d1428;border:1px solid #1a2845"></div>
+      <div class="pc" style="background:#070d1e"></div>
+      <div class="pc" style="background:#1a3a8f" title="#1a3a8f — Navy"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Gold"></div>
+      <div class="pc" style="background:#e8eeff" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#1a3a8f15;color:#1a3a8f">Navy</span>
+      <span class="tag" style="background:#f5c84215;color:#b8860b">Gold</span>
+      <span class="tag" style="background:#0d1428;color:#7080b0">Dark</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM13: NSB LOGO INSPIRED DARK ─── -->
+<div class="card" id="cdm13" onclick="pick('dm13','#e8584a','NSB Logo Inspired — Dark')">
+  <div class="star-badge" style="background:conic-gradient(#e8584a 0deg 90deg,#f5b942 90deg 180deg,#3aaecc 180deg 270deg,#2b5fc4 270deg 360deg);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#0a0f1c">
+    <div class="mp-nav" style="background:#0a0f1c;border-color:#141e35">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#2b5fc4,#3aaecc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#6070a0">Get Started</span><span class="mp-link" style="color:#6070a0">Docs</span><span class="mp-link" style="color:#6070a0">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#e8584a,#f5b942);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#e8584a0a 0%,#f5b9420a 50%,#3aaecc08 100%)">
+      <div class="mp-badge" style="background:#e8584a15;border:1px solid #e8584a40;color:#e8584a"><div class="mp-dot" style="background:#f5b942"></div>v0.4.2 — ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#e8f0ff">Bridge your <span style="color:#e8584a">simulators</span><br>with <span style="background:linear-gradient(90deg,#3aaecc,#2b5fc4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">real world</span></div>
+      <div class="mp-sub" style="color:#6070a0">NSB brand palette on dark: all logo colors represented.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#e8584a,#f5b942);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#3aaecc;border-color:#3aaecc44;background:#0a0f1c">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#141e35">
+        <div class="mp-tbar" style="background:#0f1628;border-color:#141e35"><div class="mp-tdots"><div class="mp-td" style="background:#e8584a"></div><div class="mp-td" style="background:#f5b942"></div><div class="mp-td" style="background:#3aaecc"></div></div></div>
+        <div class="mp-tbody" style="background:#0a0f1c;color:#6070a0"><div><span style="color:#364870">$</span> <span style="color:#3aaecc">nsb_daemon</span> config.yaml</div><div style="color:#364870">[info] Daemon started</div><div style="color:#e8584a;font-weight:600">✓ Ready</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#0a0f1c;border-color:#141e35;color:#e8f0ff">
+    <div class="card-name" style="color:#e8f0ff">NSB Logo Inspired — Dark <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#e8584a15;color:#e8584a;border:1px solid #e8584a40;padding:2px 6px;border-radius:3px">LOGO</span></div>
+    <div class="card-desc" style="color:#6070a0">Bridge Coral (#e8584a) + Slug Gold (#f5b942) + Letter Blue (#2b5fc4) + Letter Teal (#3aaecc). Complete NSB brand on dark background.</div>
+    <div class="palette">
+      <div class="pc" style="background:#0a0f1c;border:1px solid #141e35"></div>
+      <div class="pc" style="background:#05080f"></div>
+      <div class="pc" style="background:#e8584a" title="#e8584a — Coral"></div>
+      <div class="pc" style="background:#f5b942" title="#f5b942 — Gold"></div>
+      <div class="pc" style="background:#3aaecc" title="#3aaecc — Teal"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#e8584a15;color:#e8584a">Coral</span>
+      <span class="tag" style="background:#f5b94215;color:#c0860b">Gold</span>
+      <span class="tag" style="background:#3aaecc15;color:#0891b2">Teal</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM14: MIDNIGHT GOLD GRADIENT ─── -->
+<div class="card" id="cdm14" onclick="pick('dm14','#c9a227','Midnight Gold Gradient')">
+  <div class="star-badge" style="background:linear-gradient(135deg,#0c2a6e,#c9a227,#f5d76e);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:linear-gradient(160deg,#040918 0%,#081430 60%,#0c0818 100%)">
+    <div class="mp-nav" style="background:rgba(8,20,48,0.95);border-color:#1a2c50">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#c9a227,#f5d76e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#6070a0">Get Started</span><span class="mp-link" style="color:#6070a0">Docs</span><span class="mp-link" style="color:#6070a0">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#c9a227,#f5d76e);color:#040918;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#c9a22720 0%,#f5d76e10 100%)">
+      <div class="mp-badge" style="background:#c9a22720;border:1px solid #c9a22750;color:#f5d76e"><div class="mp-dot" style="background:#f5d76e"></div>v0.4.2 — ns-3 support</div>
+      <div class="mp-h1" style="color:#e8f0ff">Bridge your<br><span style="background:linear-gradient(90deg,#c9a227,#f5d76e,#e8a030);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span></div>
+      <div class="mp-sub" style="color:#6070a0">Navy-to-midnight gradient with rich gold gradient text.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#c9a227,#f5d76e);color:#040918;font-weight:800">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#8090c0;border-color:#1a2c50;background:rgba(4,9,24,0.5)">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#1a2c50;background:rgba(4,9,24,0.8)">
+        <div class="mp-tbar" style="background:#081430;border-color:#1a2c50"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#28c840"></div></div></div>
+        <div class="mp-tbody" style="background:rgba(4,9,24,0.8);color:#6070a0"><div><span style="color:#364870">$</span> <span style="color:#c9a227">nsb_daemon</span> config.yaml</div><div style="color:#364870">[info] Daemon started</div><div style="color:#f5d76e;font-weight:600">✓ Ready</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#0c1325;border-color:#1a2c50;color:#e8f0ff">
+    <div class="card-name" style="color:#e8f0ff">Midnight Gold Gradient <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#c9a22722;color:#c9a227;border:1px solid #c9a22744;padding:2px 6px;border-radius:3px">GRADIENT</span></div>
+    <div class="card-desc" style="color:#6070a0">Midnight Navy gradient background with rich gold (#c9a227 → #f5d76e) gradient text. Sophisticated and luxurious dark aesthetic.</div>
+    <div class="palette">
+      <div class="pc" style="background:#040918;border:1px solid #1a2c50"></div>
+      <div class="pc" style="background:#0c2a6e"></div>
+      <div class="pc" style="background:#c9a227" title="#c9a227 — Dark Gold"></div>
+      <div class="pc" style="background:#f5d76e" title="#f5d76e — Light Gold"></div>
+      <div class="pc" style="background:#e8a030" title="#e8a030 — Amber"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#c9a22722;color:#c9a227">Gold</span>
+      <span class="tag" style="background:#c9a22722;color:#f5d76e">Gradient</span>
+      <span class="tag" style="background:#0c1325;color:#6070a0">Luxury</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM15: AURORA GRADIENT DARK ─── -->
+<div class="card" id="cdm15" onclick="pick('dm15','#6c3de8','Aurora Gradient Dark')">
+  <div class="star-badge" style="background:linear-gradient(135deg,#6c3de8,#a080ff,#00c2cc);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:linear-gradient(135deg,#080614 0%,#0a1020 40%,#080e18 100%)">
+    <div class="mp-nav" style="background:rgba(8,6,20,0.92);border-color:#1e1840">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#a080ff,#00c2cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#6060a0">Get Started</span><span class="mp-link" style="color:#6060a0">Docs</span><span class="mp-link" style="color:#6060a0">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#6c3de8,#00c2cc);color:#fff;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#6c3de818 0%,#00c2cc08 100%)">
+      <div class="mp-badge" style="background:#6c3de818;border:1px solid #6c3de840;color:#a080ff"><div class="mp-dot" style="background:#00c2cc"></div>v0.4.2 — ns-3 support</div>
+      <div class="mp-h1" style="color:#e8e0ff">Bridge your <span style="background:linear-gradient(90deg,#a080ff,#00c2cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#6060a0">Purple-to-teal mesh gradient. Modern and ethereal.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#6c3de8,#00c2cc);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#a080ff;border-color:#6c3de844;background:rgba(8,6,20,0.8)">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#1e1840;background:rgba(8,6,20,0.8)">
+        <div class="mp-tbar" style="background:#100e28;border-color:#1e1840"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#28c840"></div></div></div>
+        <div class="mp-tbody" style="background:rgba(8,6,20,0.8);color:#6060a0"><div><span style="color:#404070">$</span> <span style="color:#a080ff">nsb_daemon</span> config.yaml</div><div style="color:#404070">[info] Daemon started</div><div style="color:#00c2cc;font-weight:600">✓ Ready</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#0f0e20;border-color:#1e1840;color:#e8e0ff">
+    <div class="card-name" style="color:#e8e0ff">Aurora Gradient Dark <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#6c3de822;color:#a080ff;border:1px solid #6c3de844;padding:2px 6px;border-radius:3px">GRADIENT</span></div>
+    <div class="card-desc" style="color:#6060a0">Purple (#6c3de8) to Teal (#00c2cc) mesh gradient. Aurora-inspired, ethereal, perfect for modern tech products.</div>
+    <div class="palette">
+      <div class="pc" style="background:#080614;border:1px solid #1e1840"></div>
+      <div class="pc" style="background:#0a1020"></div>
+      <div class="pc" style="background:#6c3de8" title="#6c3de8 — Purple"></div>
+      <div class="pc" style="background:#a080ff" title="#a080ff — Light Purple"></div>
+      <div class="pc" style="background:#00c2cc" title="#00c2cc — Teal"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#6c3de822;color:#a080ff">Purple</span>
+      <span class="tag" style="background:#00c2cc15;color:#00c2cc">Teal</span>
+      <span class="tag" style="background:#6c3de822;color:#a080ff">Gradient</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DM16: EMBER GRADIENT DARK ─── -->
+<div class="card" id="cdm16" onclick="pick('dm16','#d44010','Ember Gradient Dark')"">
+  <div class="star-badge" style="background:linear-gradient(135deg,#8b1a0a,#d44010,#f5832a,#ffc060);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#0c0604">
+    <div class="mp-nav" style="background:#160a06;border-color:#301810">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#f5832a,#ffc060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#806050">Get Started</span><span class="mp-link" style="color:#806050">Docs</span><span class="mp-link" style="color:#806050">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#d44010,#f5832a);color:#fff;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#8b1a0a18 0%,#f583180a 100%)">
+      <div class="mp-badge" style="background:#f5832a18;border:1px solid #f5832a44;color:#f5832a"><div class="mp-dot" style="background:#f5832a"></div>v0.4.2 — ns-3 support</div>
+      <div class="mp-h1" style="color:#fff0e8">Bridge your <span style="background:linear-gradient(90deg,#f5832a,#ffc060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#806050">Deep charcoal with ember orange-red gradient. Warm and inviting.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#d44010,#f5832a);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#fff0e8;border-color:#301810;background:#160a06">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#301810;background:#160a06">
+        <div class="mp-tbar" style="background:#1e100a;border-color:#301810"><div class="mp-tdots"><div class="mp-td" style="background:#ff5f56"></div><div class="mp-td" style="background:#febc2e"></div><div class="mp-td" style="background:#28c840"></div></div></div>
+        <div class="mp-tbody" style="background:#160a06;color:#806050"><div><span style="color:#604030">$</span> <span style="color:#f5832a">nsb_daemon</span> config.yaml</div><div style="color:#604030">[info] Daemon started</div><div style="color:#ffc060;font-weight:600">✓ Ready</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#180c08;border-color:#301810;color:#fff0e8">
+    <div class="card-name" style="color:#fff0e8">Ember Gradient Dark <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#f5832a22;color:#f5832a;border:1px solid #f5832a44;padding:2px 6px;border-radius:3px">GRADIENT</span></div>
+    <div class="card-desc" style="color:#806050">Deep Charcoal (#0c0604) with Ember Red (#8b1a0a) to Orange (#f5832a) to Gold (#ffc060) gradient. Warm, fire-inspired dark theme.</div>
+    <div class="palette">
+      <div class="pc" style="background:#0c0604;border:1px solid #301810"></div>
+      <div class="pc" style="background:#8b1a0a" title="#8b1a0a — Deep Red"></div>
+      <div class="pc" style="background:#d44010" title="#d44010 — Ember"></div>
+      <div class="pc" style="background:#f5832a" title="#f5832a — Orange"></div>
+      <div class="pc" style="background:#ffc060" title="#ffc060 — Gold"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#d44010;color:#fff0e8">Ember</span>
+      <span class="tag" style="background:#f5832a15;color:#f5832a">Orange</span>
+      <span class="tag" style="background:#d44010;color:#fff0e8">Warm</span>
     </div>
   </div>
 </div>
@@ -1158,7 +1547,7 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
 ══════════════════════════════ -->
 <div class="sec-header light-bg" id="sec-lm">
   <div class="sec-mode-tag" style="color:#6a7890"><div class="sec-mode-dot" style="background:#1a1e25"></div>Light Mode · Multi Color</div>
-  <div class="sec-h2" style="color:#0a1018">8 Multi-Accent Light Combos with Gradients</div>
+  <div class="sec-h2" style="color:#0a1018">15 Multi-Accent Light Combos with Gradients</div>
   <div class="sec-desc light">Smart combinations built with gradients from the 6 single light schemes — enhanced with NSB logo-inspired color pairings for visual impact.</div>
 </div>
 
@@ -1336,43 +1725,43 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
   </div>
 </div>
 
-<!-- ─── LM5: CRIMSON BRIDGE × NAVY LIGHT (Logo-accurate light version) ─── -->
-<div class="card" id="clm5" onclick="pick('lm5','#991b1b','Crimson × Navy Light')" style="border-color:#f0bcc8">
-  <div class="star-badge" style="background:linear-gradient(90deg,#991b1b,#3d5fb8);color:#fff">★ Favourite</div>
-  <div class="mini-preview" style="background:#fef8f8">
-    <div class="mp-nav" style="background:#fef8f8ee;border-color:#e8b4bc">
-      <div class="mp-logo" style="background:linear-gradient(90deg,#3d5fb8,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
-      <div class="mp-links"><span class="mp-link" style="color:#5a4050">Get Started</span><span class="mp-link" style="color:#5a4050">Docs</span><span class="mp-link" style="color:#5a4050">Community</span></div>
-      <span class="mp-cta" style="background:linear-gradient(90deg,#3d5fb8,#dc2626);color:#fff">Get Started →</span>
+<!-- ─── LM5: GOLDEN BRIDGE × NAVY LIGHT (Logo-accurate light version with navy background) ─── -->
+<div class="card" id="clm5" onclick="pick('lm5','#3d5fb8','Golden × Navy Light')" style="border-color:#b8cce8">
+  <div class="star-badge" style="background:linear-gradient(90deg,#b45309,#3d5fb8);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#eef5fc">
+    <div class="mp-nav" style="background:#eef5fcee;border-color:#d0dce8">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#3d5fb8,#b45309);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#3a5090">Get Started</span><span class="mp-link" style="color:#3a5090">Docs</span><span class="mp-link" style="color:#3a5090">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#3d5fb8,#b45309);color:#fff">Get Started →</span>
     </div>
-    <div class="mp-hero" style="background:radial-gradient(ellipse 70% 50% at 30% 0%,#dc26260c 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#3d5fb80a 0%,transparent 55%)">
-      <div class="mp-badge" style="background:#dc262615;border:1px solid #dc262630;color:#991b1b"><div class="mp-dot" style="background:#dc2626"></div>v0.4.2 — Now with ns-3 bridge support</div>
-      <div class="mp-h1" style="color:#2a0c0c">Bridge your <span style="background:linear-gradient(90deg,#3d5fb8,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#dc2626">ators</span><br>with the real world</div>
-      <div class="mp-sub" style="color:#5a4050">NSB connects network simulators. Real-time. Reproducible.</div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,rgba(61,95,184,0.04) 0%,rgba(180,83,9,0.03) 100%)">
+      <div class="mp-badge" style="background:#d0dce820;border:1px solid #d0dce840;color:#445080"><div class="mp-dot" style="background:#b45309"></div>v0.4.2 — Now with ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#1a2438">Bridge your <span style="background:linear-gradient(90deg,#3d5fb8,#b45309);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#b45309">ators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#445080">NSB connects network simulators with style. Real-time. Reproducible.</div>
       <div class="mp-btns">
-        <span class="mp-bp" style="background:linear-gradient(135deg,#3d5fb8,#dc2626);color:#fff">⚡ Quickstart — 5 min</span>
-        <span class="mp-bs" style="color:#2a0c0c;border-color:#e8b4bc;background:#ffe4e0">Read the Docs →</span>
+        <span class="mp-bp" style="background:linear-gradient(135deg,#3d5fb8,#b45309);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#1a2438;border-color:#d0dce8;background:#e8f0f9">Read the Docs →</span>
       </div>
-      <div class="mp-term" style="border-color:#e8b4bc">
-        <div class="mp-tbar" style="background:#ffe4e0;border-color:#e8b4bc"><div class="mp-tdots"><div class="mp-td" style="background:#dc2626"></div><div class="mp-td" style="background:#ea580c"></div><div class="mp-td" style="background:#15803d"></div></div></div>
-        <div class="mp-tbody" style="background:#ffe4e0;color:#2a0c0c"><div><span style="color:#3d5fb8">$</span> <span style="color:#2a0c0c">pip install nsb-client</span></div><div style="color:#7a5a60">Successfully installed nsb-client-0.4.2</div><div style="color:#dc2626;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      <div class="mp-term" style="border-color:#d0dce8">
+        <div class="mp-tbar" style="background:#e8f0f9;border-color:#d0dce8"><div class="mp-tdots"><div class="mp-td" style="background:#3d5fb8"></div><div class="mp-td" style="background:#b45309"></div><div class="mp-td" style="background:#0891b2"></div></div></div>
+        <div class="mp-tbody" style="background:#e8f0f9;color:#1a2438"><div><span style="color:#3d5fb8">$</span> <span style="color:#1a2438">pip install nsb-client</span></div><div style="color:#667090">Successfully installed nsb-client-0.4.2</div><div style="color:#b45309;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
       </div>
     </div>
   </div>
-  <div class="card-foot" style="background:#fef8f8;border-color:#e8b4bc;color:#2a0c0c">
-    <div class="card-name" style="color:#2a0c0c">Crimson Bridge × Navy Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#dc262615;color:#dc2626;border:1px solid #dc262630;padding:2px 6px;border-radius:3px">LOGO</span></div>
-    <div class="card-desc" style="color:#5a4050">Light mode companion to dark Bridge Red × Navy. Crimson + Navy Blue with gradient buttons. Perfect for logo brand consistency across modes.</div>
+  <div class="card-foot" style="background:#eef5fc;border-color:#d0dce8;color:#1a2438">
+    <div class="card-name" style="color:#1a2438">Golden Bridge × Navy Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#d0dce820;color:#445080;border:1px solid #d0dce840;padding:2px 6px;border-radius:3px">LOGO</span></div>
+    <div class="card-desc" style="color:#445080">Light subtle background with Golden Amber (#b45309) + Navy Blue (#3d5fb8) accents. Gradient buttons with professional styling. Clean, minimal light mode design.</div>
     <div class="palette">
-      <div class="pc" style="background:#fef8f8;border:1px solid #e8b4bc"></div>
-      <div class="pc" style="background:#ffe4e0"></div>
+      <div class="pc" style="background:#eef5fc;border:1px solid #d0dce8"></div>
+      <div class="pc" style="background:#e8f0f9"></div>
       <div class="pc" style="background:#3d5fb8" title="#3d5fb8 — Navy Blue"></div>
-      <div class="pc" style="background:#dc2626" title="#dc2626 — Crimson Red"></div>
-      <div class="pc" style="background:#2a0c0c" title="Text"></div>
+      <div class="pc" style="background:#b45309" title="#b45309 — Golden Amber"></div>
+      <div class="pc" style="background:#1a2438" title="Text"></div>
     </div>
     <div class="tags">
-      <span class="tag" style="background:#dc262615;color:#dc2626">Crimson</span>
-      <span class="tag" style="background:#3d5fb815;color:#3d5fb8">Navy</span>
-      <span class="tag" style="background:#e8b4bc;color:#5a4050">Logo Light</span>
+      <span class="tag" style="background:#d0dce820;color:#445080">Navy</span>
+      <span class="tag" style="background:#d0dce820;color:#b45309">Golden</span>
+      <span class="tag" style="background:#e8f0f9;color:#445080">Light</span>
     </div>
   </div>
 </div>
@@ -1503,104 +1892,598 @@ body{font-family:'Sora',sans-serif;background:#0a0c10;color:#e8eaf0;font-size:15
 </div>
 
 <!-- ─── LM9: NAVY × YELLOW × BLUE (Requested light mode) ─── -->
-<div class="card" id="clm9" onclick="pick('lm9','#3d5fb8','Navy × Yellow × Blue')" style="border-color:#c8d4e4">
-  <div class="star-badge" style="background:linear-gradient(90deg,#3d5fb8,#d89e04,#0891b2);color:#000">★ Favourite</div>
+<div class="card" id="clm9" onclick="pick('lm9','#1a3a8f','Navy × Yellow × Blue')" style="border-color:#c8d4e4">
+  <div class="star-badge" style="background:linear-gradient(90deg,#1a3a8f,#d89e04,#0891b2);color:#fff">★ Favourite</div>
   <div class="mini-preview" style="background:#f8fafe">
     <div class="mp-nav" style="background:#f8fafe;border-color:#c0cce8">
-      <div class="mp-logo" style="background:linear-gradient(90deg,#3d5fb8,#d89e04);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-logo" style="background:linear-gradient(90deg,#1a3a8f,#d89e04);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
       <div class="mp-links"><span class="mp-link" style="color:#3a5090">Get Started</span><span class="mp-link" style="color:#3a5090">Docs</span><span class="mp-link" style="color:#3a5090">Community</span></div>
-      <span class="mp-cta" style="background:linear-gradient(90deg,#3d5fb8,#d89e04);color:#fff;font-weight:700">Get Started →</span>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#1a3a8f,#d89e04);color:#fff;font-weight:700">Get Started →</span>
     </div>
-    <div class="mp-hero" style="background:linear-gradient(135deg,#3d5fb80c 0%,#d89e040a 50%,#0891b20a 100%)">
+    <div class="mp-hero" style="background:linear-gradient(135deg,#1a3a8f0c 0%,#d89e040a 50%,#0891b20a 100%)">
       <div class="mp-badge" style="background:#d89e0415;border:1px solid #d89e0430;color:#d89e04"><div class="mp-dot" style="background:#d89e04"></div>v0.4.2 — Now with ns-3 bridge support</div>
-      <div class="mp-h1" style="color:#0a1428">Bridge your <span style="background:linear-gradient(90deg,#3d5fb8,#d89e04);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-h1" style="color:#0a1428">Bridge your <span style="background:linear-gradient(90deg,#1a3a8f,#d89e04);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
       <div class="mp-sub" style="color:#3a5090">NSB connects network simulators with style. Fast. Reproducible.</div>
       <div class="mp-btns">
-        <span class="mp-bp" style="background:linear-gradient(135deg,#3d5fb8,#d89e04);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bp" style="background:linear-gradient(135deg,#1a3a8f,#d89e04);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
         <span class="mp-bs" style="color:#0a1428;border-color:#c0cce8;background:#dce8f8">Read the Docs →</span>
       </div>
       <div class="mp-term" style="border-color:#c0cce8">
-        <div class="mp-tbar" style="background:#dce8f8;border-color:#c0cce8"><div class="mp-tdots"><div class="mp-td" style="background:#3d5fb8"></div><div class="mp-td" style="background:#d89e04"></div><div class="mp-td" style="background:#0891b2"></div></div></div>
-        <div class="mp-tbody" style="background:#dce8f8;color:#0a1428"><div><span style="color:#3d5fb8">$</span> <span style="color:#0a1428">pip install nsb-client</span></div><div style="color:#6880b0">Successfully installed nsb-client-0.4.2</div><div style="color:#d89e04;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+        <div class="mp-tbar" style="background:#dce8f8;border-color:#c0cce8"><div class="mp-tdots"><div class="mp-td" style="background:#1a3a8f"></div><div class="mp-td" style="background:#d89e04"></div><div class="mp-td" style="background:#0891b2"></div></div></div>
+        <div class="mp-tbody" style="background:#dce8f8;color:#0a1428"><div><span style="color:#1a3a8f">$</span> <span style="color:#0a1428">pip install nsb-client</span></div><div style="color:#6880b0">Successfully installed nsb-client-0.4.2</div><div style="color:#d89e04;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
       </div>
     </div>
   </div>
   <div class="card-foot" style="background:#f8fafe;border-color:#c0cce8;color:#0a1428">
     <div class="card-name" style="color:#0a1428">Navy × Yellow × Blue <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#d89e0415;color:#d89e04;border:1px solid #d89e0430;padding:2px 6px;border-radius:3px">CLASSIC</span></div>
-    <div class="card-desc" style="color:#3a5090">Light mode choice: Navy Blue (#3d5fb8) + Bright Yellow (#d89e04) + Teal Cyan (#0891b2). Modern, professional, eye-catching for light interfaces.</div>
+    <div class="card-desc" style="color:#3a5090">Light mode choice: Navy Blue (#1a3a8f) + Bright Yellow (#d89e04) + Teal Cyan (#0891b2). Modern, professional, eye-catching for light interfaces.</div>
     <div class="palette">
       <div class="pc" style="background:#f8fafe;border:1px solid #c0cce8"></div>
       <div class="pc" style="background:#dce8f8"></div>
-      <div class="pc" style="background:#3d5fb8" title="#3d5fb8 — Navy Blue"></div>
+      <div class="pc" style="background:#1a3a8f" title="#1a3a8f — Navy Blue"></div>
       <div class="pc" style="background:#d89e04" title="#d89e04 — Bright Yellow"></div>
       <div class="pc" style="background:#0891b2" title="#0891b2 — Teal Cyan"></div>
       <div class="pc" style="background:#0a1428" title="Text"></div>
     </div>
     <div class="tags">
-      <span class="tag" style="background:#3d5fb815;color:#3d5fb8">Navy</span>
+      <span class="tag" style="background:#1a3a8f15;color:#1a3a8f">Navy</span>
       <span class="tag" style="background:#d89e0415;color:#d89e04">Yellow</span>
       <span class="tag" style="background:#0891b215;color:#0891b2">Cyan</span>
     </div>
   </div>
 </div>
 
+<!-- ─── LM10: PURPLE × CYAN GLASSMORPHISM LIGHT (Futuristic light mode) ─── -->
+<div class="card" id="clm10" onclick="pick('lm10','#7c3aed','Purple × Cyan Light Glass')" style="border-color:#d4c4f0">
+  <div class="star-badge" style="background:linear-gradient(90deg,#7c3aed,#0891b2);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f3f4ff">
+    <div class="mp-nav" style="background:#f3f4ffee;border-color:#d4c4f0">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#7c3aed,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#5b4d8a">Get Started</span><span class="mp-link" style="color:#5b4d8a">Docs</span><span class="mp-link" style="color:#5b4d8a">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#7c3aed,#0891b2);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#7c3aed0a 0%,#0891b20a 100%)">
+      <div class="mp-badge" style="background:#7c3aed12;border:1px solid #7c3aed25;color:#6b3fa0"><div class="mp-dot" style="background:#0891b2"></div>v0.4.2 — Glassmorphic bridge support</div>
+      <div class="mp-h1" style="color:#1e1a3a">Bridge your <span style="background:linear-gradient(90deg,#7c3aed,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simul</span><span style="color:#0891b2">ators</span><br>with style</div>
+      <div class="mp-sub" style="color:#5b4d8a">NSB with a modern, ethereal aesthetic. Real-time. Beautiful.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#7c3aed,#0891b2);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#1e1a3a;border-color:#d4c4f0;background:#e8e4ff">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#d4c4f0">
+        <div class="mp-tbar" style="background:#e8e4ff;border-color:#d4c4f0"><div class="mp-tdots"><div class="mp-td" style="background:#7c3aed"></div><div class="mp-td" style="background:#0891b2"></div><div class="mp-td" style="background:#a78bfa"></div></div></div>
+        <div class="mp-tbody" style="background:#e8e4ff;color:#1e1a3a"><div><span style="color:#7c3aed">$</span> <span style="color:#1e1a3a">pip install nsb-client</span></div><div style="color:#6b7ba8">Successfully installed nsb-client-0.4.2</div><div style="color:#0891b2;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f3f4ff;border-color:#d4c4f0;color:#1e1a3a">
+    <div class="card-name" style="color:#1e1a3a">Purple × Cyan Glassmorphism Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#7c3aed12;color:#6b3fa0;border:1px solid #7c3aed25;padding:2px 6px;border-radius:3px">GLASS</span></div>
+    <div class="card-desc" style="color:#5b4d8a">Light glassmorphism with Purple (#7c3aed) + Cyan (#0891b2). Modern, luminous, and ethereal. Perfect for cutting-edge interfaces with a soft, refined touch.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f3f4ff;border:1px solid #d4c4f0"></div>
+      <div class="pc" style="background:#e8e4ff"></div>
+      <div class="pc" style="background:#7c3aed" title="#7c3aed — Purple"></div>
+      <div class="pc" style="background:#0891b2" title="#0891b2 — Cyan"></div>
+      <div class="pc" style="background:#a78bfa" title="#a78bfa — Light Purple"></div>
+      <div class="pc" style="background:#1e1a3a" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#7c3aed12;color:#6b3fa0">Purple</span>
+      <span class="tag" style="background:#0891b215;color:#0891b2">Cyan</span>
+      <span class="tag" style="background:#d4c4f0;color:#5b4d8a">Glass</span>
+    </div>
+  </div>
 </div>
 
+<!-- ─── LN1: EMERALD × ROSE LIGHT (Green + Rose combo) ─── -->
+<div class="card" id="cln1" onclick="pick('ln1','#10b981','Emerald × Rose Light')" style="border-color:#dcc5d1">
+  <div class="star-badge" style="background:linear-gradient(90deg,#10b981,#f43f5e);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#fef5f8">
+    <div class="mp-nav" style="background:#fef5f8;border-color:#e8d5dc">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#10b981,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#4a6b5f">Get Started</span><span class="mp-link" style="color:#4a6b5f">Docs</span><span class="mp-link" style="color:#4a6b5f">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#10b981,#f43f5e);color:#fff;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:radial-gradient(ellipse 60% 50% at 25% 0%,#10b9810a 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 75% 10%,#f43f5e09 0%,transparent 55%)">
+      <div class="mp-badge" style="background:#f43f5e12;border:1px solid #f43f5e28;color:#c72a49"><div class="mp-dot" style="background:#10b981"></div>v0.4.2 — Now with ns-3 support</div>
+      <div class="mp-h1" style="color:#1a2e26">Bridge your <span style="background:linear-gradient(90deg,#10b981,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#4a6b5f">NSB connects with elegance. Real-time. Refined.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(135deg,#10b981,#f43f5e);color:#fff;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#1a2e26;border-color:#e8d5dc;background:#fef5f8">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#e8d5dc">
+        <div class="mp-tbar" style="background:#fef5f8;border-color:#e8d5dc"><div class="mp-tdots"><div class="mp-td" style="background:#10b981"></div><div class="mp-td" style="background:#f43f5e"></div><div class="mp-td" style="background:#06b6d4"></div></div></div>
+        <div class="mp-tbody" style="background:#fef5f8;color:#1a2e26"><div><span style="color:#10b981">$</span> <span style="color:#1a2e26">pip install nsb-client</span></div><div style="color:#4a6b5f">Successfully installed nsb-client-0.4.2</div><div style="color:#10b981;font-weight:600">🎉  Simulation running — 2 clients active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#fef5f8;border-color:#e8d5dc;color:#1a2e26">
+    <div class="card-name" style="color:#1a2e26">Emerald × Rose Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#f43f5e12;color:#c72a49;border:1px solid #f43f5e28;padding:2px 6px;border-radius:3px">ELEGANT</span></div>
+    <div class="card-desc" style="color:#4a6b5f">Emerald Green (#10b981) + Rose Pink (#f43f5e) on soft background. Sophisticated, fresh, and elegantly complementary. Perfect for refined interfaces.</div>
+    <div class="palette">
+      <div class="pc" style="background:#fef5f8;border:1px solid #e8d5dc"></div>
+      <div class="pc" style="background:#ffffff"></div>
+      <div class="pc" style="background:#10b981" title="#10b981 — Emerald Green"></div>
+      <div class="pc" style="background:#f43f5e" title="#f43f5e — Rose Pink"></div>
+      <div class="pc" style="background:#1a2e26" title="Text"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#10b98115;color:#10b981">Emerald</span>
+      <span class="tag" style="background:#f43f5e15;color:#c72a49">Rose</span>
+      <span class="tag" style="background:#dcc5d1;color:#4a6b5f">Elegant</span>
+    </div>
+  </div>
 </div>
 
-<!-- /page-wrap -->
+<!-- ─── LN2: NAVY × GOLD × BRIDGE ORANGE LIGHT ─── -->
+<div class="card" id="cln2" onclick="pick('ln2','#1a3a8f','Navy × Gold × Orange Light')" style="border-color:#d8d0e4">
+  <div class="star-badge" style="background:linear-gradient(90deg,#1a3a8f,#f5c842,#e8584a);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#eef2ff">
+    <div class="mp-nav" style="background:#eef2ff;border-color:#d0daff">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#1a3a8f,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#5060a0">Get Started</span><span class="mp-link" style="color:#5060a0">Docs</span><span class="mp-link" style="color:#5060a0">Community</span></div>
+      <span class="mp-bp" style="background:#f5c842;color:#0a1a40;font-weight:700";>Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#1a3a8f0a 0%,#f5c8420a 50%,#e8584a0a 100%)">
+      <div class="mp-badge" style="background:#e8584a15;border:1px solid #e8584a30;color:#c0401a"><div class="mp-dot" style="background:#e8584a"></div>v0.4.2 — ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#0a1a40">Bridge your <span style="background:linear-gradient(90deg,#1a3a8f,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the <span style="color:#e8584a">real world</span></div>
+      <div class="mp-sub" style="color:#5060a0">NSB connects network simulators with bridge visualization. Real-time. Reproducible.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:#f5c842;color:#0a1a40;font-weight:700">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#e8584a;border-color:#e8584a55;background:#eef2ff">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#d0daff">
+        <div class="mp-tbar" style="background:#eef2ff;border-color:#d0daff"><div class="mp-tdots"><div class="mp-td" style="background:#e8584a"></div><div class="mp-td" style="background:#f5c842"></div><div class="mp-td" style="background:#1a3a8f"></div></div></div>
+        <div class="mp-tbody" style="background:#eef2ff;color:#0a1a40"><div><span style="color:#1a3a8f">$</span> <span style="color:#0a1a40">nsb_daemon config.yaml</span></div><div style="color:#5060a0">[info] Daemon started :65432</div><div style="color:#e8584a;font-weight:600">✓ bridge active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#eef2ff;border-color:#d0daff;color:#0a1a40">
+    <div class="card-name" style="color:#0a1a40">Navy × Gold × Orange Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#e8584a15;color:#c0401a;border:1px solid #e8584a30;padding:2px 6px;border-radius:3px">LIGHT</span></div>
+    <div class="card-desc" style="color:#5060a0">Navy (#1a3a8f) + Gold (#f5c842) dominant + Bridge Orange (#e8584a) accent. Modern and professional.</div>
+    <div class="palette">
+      <div class="pc" style="background:#eef2ff;border:1px solid #d0daff"></div>
+      <div class="pc" style="background:#ffffff"></div>
+      <div class="pc" style="background:#1a3a8f" title="#1a3a8f — Navy Blue"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Gold"></div>
+      <div class="pc" style="background:#e8584a" title="#e8584a — Bridge Orange"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#1a3a8f15;color:#1a3a8f">Navy</span>
+      <span class="tag" style="background:#f5c84215;color:#b8860b">Gold</span>
+      <span class="tag" style="background:#e8584a15;color:#e8584a">Orange</span>
+    </div>
+  </div>
+</div>
 
-<!-- ═══ COMPARE STRIP ═══ -->
+<!-- ─── LN3: NSB LOGO LIGHT (Full brand colors) ─── -->
+<div class="card" id="cln3" onclick="pick('ln3','#e8584a','NSB Logo Light')" style="border-color:#f0e8e0">
+  <div class="star-badge" style="background:conic-gradient(#e8584a 0deg 90deg,#f5b942 90deg 180deg,#3aaecc 180deg 270deg,#2b5fc4 270deg 360deg);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#fdf8f5">
+    <div class="mp-nav" style="background:#fdf8f5;border-color:#f0e8e0">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#2b5fc4,#3aaecc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#7a8898">Get Started</span><span class="mp-link" style="color:#7a8898">Docs</span><span class="mp-link" style="color:#7a8898">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#e8584a,#f5b942);color:#fff">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#e8584a0a 0%,#f5b9420a 50%,#3aaecc08 100%)">
+      <div class="mp-badge" style="background:#e8584a15;border:1px solid #f5c0b0;color:#e8584a"><div class="mp-dot" style="background:#f5b942"></div>v0.4.2 — ns-3 bridge support</div>
+      <div class="mp-h1" style="color:#1a1e2e">Bridge your <span style="color:#e8584a">simulators</span><br>with the <span style="background:linear-gradient(90deg,#2b5fc4,#3aaecc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">real world</span></div>
+      <div class="mp-sub" style="color:#7a8898">NSB with all brand colors from the official logo. Elegant and complete.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#e8584a,#f5b942);color:#fff">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#2b5fc4;border-color:#c0d0f0;background:#fdf8f5">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#f0e8e0">
+        <div class="mp-tbar" style="background:#f5ece8;border-color:#f0e8e0"><div class="mp-tdots"><div class="mp-td" style="background:#e8584a"></div><div class="mp-td" style="background:#f5b942"></div><div class="mp-td" style="background:#3aaecc"></div></div></div>
+        <div class="mp-tbody" style="background:#f5ece8;color:#7a8898"><div><span style="color:#3aaecc">$</span> <span style="color:#1a1e2e">nsb_daemon config.yaml</span></div><div style="color:#b0bcc8">[info] Daemon started</div><div style="color:#e8584a;font-weight:600">✓ bridge active</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#fdf8f5;border-color:#f0e8e0;color:#1a1e2e">
+    <div class="card-name" style="color:#1a1e2e">NSB Logo Light <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#fdecea;color:#c0401a;border:1px solid #f5c0b0;padding:2px 6px;border-radius:3px">LOGO</span></div>
+    <div class="card-desc" style="color:#7a8898">Bridge Coral (#e8584a) + Slug Gold (#f5b942) + Letter Blue (#2b5fc4) + Letter Teal (#3aaecc). Complete NSB brand identity on light background.</div>
+    <div class="palette">
+      <div class="pc" style="background:#fdf8f5;border:1px solid #f0e8e0"></div>
+      <div class="pc" style="background:#ffffff"></div>
+      <div class="pc" style="background:#e8584a" title="#e8584a — Bridge Coral"></div>
+      <div class="pc" style="background:#f5b942" title="#f5b942 — Slug Gold"></div>
+      <div class="pc" style="background:#2b5fc4" title="#2b5fc4 — Letter Blue"></div>
+      <div class="pc" style="background:#3aaecc" title="#3aaecc — Letter Teal"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#e8584a15;color:#e8584a">Coral</span>
+      <span class="tag" style="background:#f5b94215;color:#c0860b">Gold</span>
+      <span class="tag" style="background:#3aaecc15;color:#0891b2">Teal</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LN4: SUNRISE GOLD GRADIENT LIGHT ─── -->
+<div class="card" id="cln4" onclick="pick('ln4','#f5c842','Sunrise Gold Gradient')" style="border-color:#f5e8a0">
+  <div class="star-badge" style="background:linear-gradient(135deg,#c9860a,#f5c842,#f08020);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#fffdf0">
+    <div class="mp-nav" style="background:#fffdf0;border-color:#f5e8a0">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#c9860a,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#907040">Get Started</span><span class="mp-link" style="color:#907040">Docs</span><span class="mp-link" style="color:#907040">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#c9860a,#f5c842);color:#fff;font-weight:700">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#c98c0a0a 0%,#f5c8420a 50%,#f080200a 100%)">
+      <div class="mp-badge" style="background:#fff8cc;border:1px solid #f5e080;color:#c9860a"><div class="mp-dot" style="background:#f5c842"></div>v0.4.2 — now with ns-3 support</div>
+      <div class="mp-h1" style="color:#1a1200">Bridge your <span style="background:linear-gradient(90deg,#c9860a,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#907040">NSB with warm sunrise gradient. Golden, elegant, inviting.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#c9860a,#f5c842);color:#fff;font-weight:800">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#1a1200;border-color:#f5e080;background:#fffdf0">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#f5e8a0">
+        <div class="mp-tbar" style="background:#faf0c0;border-color:#f5e8a0"><div class="mp-tdots"><div class="mp-td" style="background:#c9860a"></div><div class="mp-td" style="background:#f5c842"></div><div class="mp-td" style="background:#f08020"></div></div></div>
+        <div class="mp-tbody" style="background:#faf0c0;color:#907040"><div><span style="color:#c0a060">$</span> <span style="color:#1a1200">nsb_daemon config.yaml</span></div><div style="color:#c0a060">[info] Daemon started</div><div style="color:#f08020;font-weight:600">✓ Ready</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#fffdf0;border-color:#f5e8a0;color:#1a1200">
+    <div class="card-name" style="color:#1a1200">Sunrise Gold Gradient <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#f5c84215;color:#b8860b;border:1px solid #f5c84266;padding:2px 6px;border-radius:3px">GRADIENT</span></div>
+    <div class="card-desc" style="color:#907040">Warm gradient from Dark Gold (#c9860a) through Gold (#f5c842) to Amber (#f08020). Perfect for autumn-inspired, warm interfaces.</div>
+    <div class="palette">
+      <div class="pc" style="background:#fffdf0;border:1px solid #f5e8a0"></div>
+      <div class="pc" style="background:#ffffff"></div>
+      <div class="pc" style="background:#c9860a" title="#c9860a — Dark Gold"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Gold"></div>
+      <div class="pc" style="background:#f08020" title="#f08020 — Amber"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#f5c84215;color:#b8860b">Gold</span>
+      <span class="tag" style="background:#f5c84215;color:#c9860a">Gradient</span>
+      <span class="tag" style="background:#f5c84215;color:#f08020">Warm</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LN5: OCEAN-TO-GOLD GRADIENT LIGHT ─── -->
+<div class="card" id="cln5" onclick="pick('ln5','#1a3a8f','Ocean-to-Gold Gradient')" style="border-color:#c0d0ff">
+  <div class="star-badge" style="background:linear-gradient(135deg,#1a3a8f,#4a7ae8,#f5c842);color:#fff">★ Favourite</div>
+  <div class="mini-preview" style="background:#f0f5ff">
+    <div class="mp-nav" style="background:#f0f5ff;border-color:#d0daff">
+      <div class="mp-logo" style="background:linear-gradient(90deg,#1a3a8f,#4a7ae8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">NSB</div>
+      <div class="mp-links"><span class="mp-link" style="color:#5060a0">Get Started</span><span class="mp-link" style="color:#5060a0">Docs</span><span class="mp-link" style="color:#5060a0">Community</span></div>
+      <span class="mp-cta" style="background:linear-gradient(90deg,#1a3a8f,#f5c842);color:#fff;font-weight:800">Get Started →</span>
+    </div>
+    <div class="mp-hero" style="background:linear-gradient(135deg,#1a3a8f0a 0%,#4a7ae80a 50%,#f5c8420a 100%)">
+      <div class="mp-badge" style="background:#eef2ff;border:1px solid #c0d0ff;color:#1a3a8f"><div class="mp-dot" style="background:#f5c842"></div>v0.4.2 — now with ns-3 support</div>
+      <div class="mp-h1" style="color:#0a1a40">Bridge your <span style="background:linear-gradient(90deg,#1a3a8f,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">simulators</span><br>with the real world</div>
+      <div class="mp-sub" style="color:#5060a0">NSB with ocean-to-gold gradient. Smooth, professional, captivating.</div>
+      <div class="mp-btns">
+        <span class="mp-bp" style="background:linear-gradient(90deg,#1a3a8f,#f5c842);color:#fff;font-weight:800">⚡ Quickstart — 5 min</span>
+        <span class="mp-bs" style="color:#1a3a8f;border-color:#c0d0ff;background:#f0f5ff">Read the Docs →</span>
+      </div>
+      <div class="mp-term" style="border-color:#d0daff">
+        <div class="mp-tbar" style="background:#e0e8ff;border-color:#d0daff"><div class="mp-tdots"><div class="mp-td" style="background:#1a3a8f"></div><div class="mp-td" style="background:#4a7ae8"></div><div class="mp-td" style="background:#f5c842"></div></div></div>
+        <div class="mp-tbody" style="background:#e0e8ff;color:#5060a0"><div><span style="color:#a0b0d0">$</span> <span style="color:#0a1a40">nsb_daemon config.yaml</span></div><div style="color:#a0b0d0">[info] Daemon started</div><div style="color:#b8860b;font-weight:600">✓ Ready</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-foot" style="background:#f0f5ff;border-color:#d0daff;color:#0a1a40">
+    <div class="card-name" style="color:#0a1a40">Ocean-to-Gold Gradient <span style="font-family:'JetBrains Mono',monospace;font-size:8px;background:#eef2ff;color:#1a3a8f;border:1px solid #c0d0ff;padding:2px 6px;border-radius:3px">GRADIENT</span></div>
+    <div class="card-desc" style="color:#5060a0">Blue-to-Gold gradient: Navy (#1a3a8f) → Sky Blue (#4a7ae8) → Gold (#f5c842). Smooth, engaging, and premium.</div>
+    <div class="palette">
+      <div class="pc" style="background:#f0f5ff;border:1px solid #d0daff"></div>
+      <div class="pc" style="background:#ffffff"></div>
+      <div class="pc" style="background:#1a3a8f" title="#1a3a8f — Navy"></div>
+      <div class="pc" style="background:#4a7ae8" title="#4a7ae8 — Sky Blue"></div>
+      <div class="pc" style="background:#f5c842" title="#f5c842 — Gold"></div>
+    </div>
+    <div class="tags">
+      <span class="tag" style="background:#1a3a8f15;color:#1a3a8f">Navy</span>
+      <span class="tag" style="background:#4a7ae815;color:#4a7ae8">Blue</span>
+      <span class="tag" style="background:#f5c84215;color:#b8860b">Gold</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ FAVOURITES STRIP ═══ -->
 <div class="compare-strip" id="cstrip">
-  <span class="cs-label">★ Favourites</span>
+  <div class="cs-label">★ Favourites <span id="cs-count-label"></span></div>
   <div class="cs-items" id="cstrip-items"></div>
-  <button class="cs-clear" onclick="clearAll()">✕ clear</button>
+  <button class="cs-clear" onclick="clearAll()">✕ clear all</button>
+</div>
+
+<!-- ═══ EXPAND MODAL ═══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal-box" id="modal-box">
+
+    <!-- header -->
+    <div class="modal-header">
+      <div class="modal-scheme-dot" id="modal-dot"></div>
+      <div class="modal-scheme-name" id="modal-name"></div>
+      <div class="modal-mode-chip" id="modal-chip"></div>
+      <button class="modal-fav-btn" id="modal-fav-btn" onclick="toggleFavFromModal()">
+        <span id="modal-fav-star">☆</span> <span id="modal-fav-text">Add to Favourites</span>
+      </button>
+      <button class="modal-close" onclick="closeModal()" title="Close (Esc)">✕</button>
+    </div>
+
+    <!-- body -->
+    <div class="modal-body">
+      <!-- big preview: clones the card's mini-preview, scaled up -->
+      <div class="modal-preview" id="modal-preview"></div>
+
+      <!-- info panel -->
+      <div class="modal-info" id="modal-info">
+        <div>
+          <div class="modal-info-label">Palette</div>
+          <div class="modal-palette-big" id="modal-palette"></div>
+        </div>
+        <div>
+          <div class="modal-info-label">Description</div>
+          <div class="modal-desc-text" id="modal-desc"></div>
+        </div>
+        <div>
+          <div class="modal-info-label">Tags</div>
+          <div class="modal-tags" id="modal-tags"></div>
+        </div>
+        <div>
+          <div class="modal-info-label">Navigate</div>
+          <div class="modal-nav">
+            <button class="modal-nav-btn" id="modal-prev" onclick="modalNav(-1)">← Prev</button>
+            <button class="modal-nav-btn" id="modal-next" onclick="modalNav(1)">Next →</button>
+          </div>
+        </div>
+        <div class="modal-kb-hint">← → arrow keys · F to fav · Esc to close</div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
 const names={
   d1:'Emerald — Current',d2:'Navy Blue',d3:'Gold — Graphite',d4:'Monochrome',d5:'NSB Brand Inspired',d6:'Cyber Network',
-  dm1:'Emerald × Gold',dm2:'Navy × Cyber',dm3:'NSB Brand × Gold',dm4:'Mono × Emerald',dm5:'Bridge Red × Navy',dm6:'Cyan Gradient × Gold',dm7:'Red Bridge Gradient',dm8:'Blue × Cyan × Gold Trio',dm9:'Navy × Gold × Orange',
+  dm1:'Emerald × Gold',dm2:'Navy × Cyber',dm3:'NSB Brand × Gold',dm4:'Mono × Emerald',dm5:'Bridge Red × Navy',dm6:'Cyan Gradient × Gold',dm7:'Red Bridge Gradient',dm8:'Blue × Cyan × Gold Trio',dm9:'Navy × Gold × Orange',dm10:'Purple × Cyan Glassmorphism',dm11:'Navy + Gold — Dark',dm13:'NSB Logo Inspired — Dark',dm14:'Midnight Gold Gradient',dm15:'Aurora Gradient Dark',dm16:'Ember Gradient Dark',
   l1:'Fresh Green',l2:'Sky Blue',l3:'Lavender Purple',l4:'Sunset Orange',l5:'Coral Red',l6:'Turquoise Cyan',
-  lm1:'Green × Cyan',lm2:'Blue × Lavender',lm3:'Sunset × Coral',lm4:'NSB Logo Combo',lm5:'Crimson × Navy Light',lm6:'Cyan × Gold Light',lm7:'Red Alert Gradient',lm8:'Blue × Cyan × Green Trio Light',lm9:'Navy × Yellow × Blue'
+  lm1:'Green × Cyan',lm2:'Blue × Lavender',lm3:'Sunset × Coral',lm4:'NSB Logo Combo',lm5:'Golden × Navy Light',lm6:'Cyan × Gold Light',lm7:'Red Alert Gradient',lm8:'Blue × Cyan × Green Trio Light',lm9:'Navy × Yellow × Blue',lm10:'Purple × Cyan Glassmorphism Light',ln1:'Emerald × Rose Light',ln2:'Navy × Gold × Orange Light',ln3:'NSB Logo Light',ln4:'Sunrise Gold Gradient',ln5:'Ocean-to-Gold Gradient'
 };
 const colors={
   d1:'#00d97e',d2:'#60A5FA',d3:'#f5c842',d4:'#ffffff',d5:'#023672',d6:'#22d3ee',
-  dm1:'#00d97e',dm2:'#60A5FA',dm3:'#38bdf8',dm4:'#ffffff',dm5:'#ef4444',dm6:'#22d3ee',dm7:'#dc2626',dm8:'#335ac0',dm9:'#335ac0',
+  dm1:'#00d97e',dm2:'#60A5FA',dm3:'#38bdf8',dm4:'#ffffff',dm5:'#ef4444',dm6:'#22d3ee',dm7:'#dc2626',dm8:'#335ac0',dm9:'#335ac0',dm10:'#7c3aed',dm11:'#f5c842',dm13:'#e8584a',dm14:'#c9a227',dm15:'#6c3de8',dm16:'#d44010',
   l1:'#15803d',l2:'#1d4ed8',l3:'#7c3aed',l4:'#ea580c',l5:'#dc2626',l6:'#0e7490',
-  lm1:'#15803d',lm2:'#1d4ed8',lm3:'#ea580c',lm4:'#023672',lm5:'#991b1b',lm6:'#0891b2',lm7:'#7c2d12',lm8:'#3d5fb8',lm9:'#3d5fb8'
+  lm1:'#15803d',lm2:'#1d4ed8',lm3:'#ea580c',lm4:'#023672',lm5:'#3d5fb8',lm6:'#0891b2',lm7:'#7c2d12',lm8:'#3d5fb8',lm9:'#1a3a8f',lm10:'#7c3aed',ln1:'#10b981',ln2:'#1a3a8f',ln3:'#e8584a',ln4:'#f5c842',ln5:'#1a3a8f'
 };
-let picked=[];
-function pick(id,col,name){
-  const card=document.getElementById('c'+id);
-  if(card.classList.contains('picked')){
+
+// ── FAVOURITES (unlimited) ──────────────────────────────────────
+let picked = new Set();
+
+function toggleFav(id, event) {
+  if (event) { event.stopPropagation(); }
+  const card = document.getElementById('c' + id);
+  if (picked.has(id)) {
+    picked.delete(id);
     card.classList.remove('picked');
-    picked=picked.filter(x=>x!==id);
   } else {
-    if(picked.length>=2){const old=picked.shift();document.getElementById('c'+old).classList.remove('picked');}
+    picked.add(id);
     card.classList.add('picked');
-    picked.push(id);
   }
-  render();
+  updateFavBtn(id);
+  renderStrip();
+  // sync modal fav button if open
+  if (modalCurrentId === id) syncModalFav();
 }
-function render(){
-  const strip=document.getElementById('cstrip');
-  const items=document.getElementById('cstrip-items');
-  if(picked.length){
+
+function updateFavBtn(id) {
+  const btn = document.querySelector('#c' + id + ' .fav-btn');
+  if (!btn) return;
+  const star = btn.querySelector('.fav-star');
+  const txt  = btn.querySelector('.fav-txt');
+  if (picked.has(id)) {
+    star.textContent = '★';
+    star.style.color = '#fbbf24';
+    if (txt) txt.textContent = 'Saved';
+  } else {
+    star.textContent = '☆';
+    star.style.color = '';
+    if (txt) txt.textContent = 'Fav';
+  }
+}
+
+function clearAll() {
+  picked.forEach(id => {
+    const card = document.getElementById('c' + id);
+    if (card) card.classList.remove('picked');
+    updateFavBtn(id);
+  });
+  picked.clear();
+  renderStrip();
+  if (modalCurrentId) syncModalFav();
+}
+
+function renderStrip() {
+  const strip = document.getElementById('cstrip');
+  const items = document.getElementById('cstrip-items');
+  const countLabel = document.getElementById('cs-count-label');
+  if (picked.size > 0) {
     strip.classList.add('show');
-    items.innerHTML=picked.map(id=>`<div class="cs-item"><div class="cs-dot" style="background:${colors[id]}"></div>${names[id]}</div>`).join('');
+    countLabel.textContent = picked.size + ' selected';
+    items.innerHTML = [...picked].map(id => `
+      <div class="cs-item" onclick="openModal('${id}')">
+        <div class="cs-dot" style="background:${colors[id]||'#888'}"></div>
+        ${names[id]||id}
+        <span class="cs-remove" onclick="toggleFav('${id}',event)" title="Remove">✕</span>
+      </div>`).join('');
   } else {
     strip.classList.remove('show');
+    countLabel.textContent = '';
+    items.innerHTML = '';
   }
 }
-function clearAll(){
-  picked.forEach(id=>document.getElementById('c'+id).classList.remove('picked'));
-  picked=[];render();
+
+// ── MODAL ───────────────────────────────────────────────────────
+let modalCurrentId = null;
+let allCardIds = [];
+
+// Collect all card IDs in DOM order (called once after load)
+function collectCardIds() {
+  allCardIds = [...document.querySelectorAll('.card[id]')].map(c => c.id.replace(/^c/, ''));
 }
-function jumpTo(id){
-  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+
+function openModal(id) {
+  modalCurrentId = id;
+  const card = document.getElementById('c' + id);
+  if (!card) return;
+
+  // ── Clone the mini-preview and scale it up ──
+  const previewSrc = card.querySelector('.mini-preview');
+  const modalPreview = document.getElementById('modal-preview');
+  modalPreview.innerHTML = '';
+  if (previewSrc) {
+    const clone = previewSrc.cloneNode(true);
+    // Remove height constraint; let it fill the modal preview panel
+    clone.style.height = '100%';
+    clone.style.width = '100%';
+
+    // Scale the inner elements up by ~1.5x via a wrapper transform
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:relative;width:100%;height:100%;overflow:hidden;';
+    const scaler = document.createElement('div');
+    scaler.style.cssText = 'transform-origin:top left;width:67%;height:67%;';
+
+    // We'll use a CSS scale approach: scale the clone 1.5x inside the panel
+    clone.style.transformOrigin = 'top left';
+    clone.style.transform = 'scale(1.5)';
+    clone.style.width = '66.67%';
+    clone.style.height = '66.67%';
+    clone.style.minHeight = 'unset';
+    clone.style.maxHeight = 'unset';
+    clone.style.flexShrink = '0';
+
+    wrapper.appendChild(clone);
+    modalPreview.appendChild(wrapper);
+  }
+
+  // ── Header ──
+  const dot = document.getElementById('modal-dot');
+  dot.style.background = colors[id] || '#888';
+  dot.style.boxShadow = `0 0 8px ${colors[id] || '#888'}80`;
+  document.getElementById('modal-name').textContent = names[id] || id;
+
+  // Mode chip: guess from id prefix
+  const chip = document.getElementById('modal-chip');
+  if (id.startsWith('l')) {
+    chip.textContent = '☀️ Light Mode';
+    chip.style.background = '#f0f3f820';
+    chip.style.color = '#8090a8';
+    // also tint modal-box for light schemes
+    document.getElementById('modal-box').style.background = '';
+    document.getElementById('modal-info').style.background = '';
+  } else {
+    chip.textContent = '🌑 Dark Mode';
+    chip.style.background = '#1e2430';
+    chip.style.color = '#6a7890';
+    document.getElementById('modal-box').style.background = '';
+    document.getElementById('modal-info').style.background = '';
+  }
+
+  // ── Palette from card ──
+  const paletteEl = document.getElementById('modal-palette');
+  paletteEl.innerHTML = '';
+  const srcPalette = card.querySelectorAll('.palette .pc');
+  const roles = ['Base Dark','Surface','Surface+','Primary Accent','Secondary Accent','Text'];
+  srcPalette.forEach((pc, i) => {
+    const bg = pc.style.background || '#888';
+    const hex = pc.title || bg;
+    const row = document.createElement('div');
+    row.className = 'modal-pc-row';
+    row.innerHTML = `
+      <div class="modal-pc-swatch" style="background:${bg}"></div>
+      <div>
+        <div class="modal-pc-hex">${hex.split(' ')[0]}</div>
+        <div class="modal-pc-role">${roles[i] || 'Color ' + (i+1)}</div>
+      </div>`;
+    paletteEl.appendChild(row);
+  });
+
+  // ── Description & Tags from card ──
+  const descEl = card.querySelector('.card-desc');
+  document.getElementById('modal-desc').textContent = descEl ? descEl.textContent.trim() : '';
+
+  const tagsEl = document.getElementById('modal-tags');
+  tagsEl.innerHTML = '';
+  card.querySelectorAll('.tags .tag').forEach(t => {
+    const clone = t.cloneNode(true);
+    clone.className = 'modal-tag';
+    clone.style.cssText = t.style.cssText;
+    tagsEl.appendChild(clone);
+  });
+
+  // ── Nav buttons ──
+  const idx = allCardIds.indexOf(id);
+  document.getElementById('modal-prev').disabled = idx <= 0;
+  document.getElementById('modal-next').disabled = idx >= allCardIds.length - 1;
+
+  syncModalFav();
+
+  // ── Open ──
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
-// sidebar highlight on scroll
+
+function syncModalFav() {
+  const btn = document.getElementById('modal-fav-btn');
+  const star = document.getElementById('modal-fav-star');
+  const txt  = document.getElementById('modal-fav-text');
+  if (picked.has(modalCurrentId)) {
+    btn.classList.add('active');
+    star.textContent = '★';
+    txt.textContent = 'Saved to Favourites';
+  } else {
+    btn.classList.remove('active');
+    star.textContent = '☆';
+    txt.textContent = 'Add to Favourites';
+  }
+}
+
+function toggleFavFromModal() {
+  if (!modalCurrentId) return;
+  toggleFav(modalCurrentId, null);
+  syncModalFav();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  modalCurrentId = null;
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function modalNav(dir) {
+  const idx = allCardIds.indexOf(modalCurrentId);
+  const next = idx + dir;
+  if (next >= 0 && next < allCardIds.length) openModal(allCardIds[next]);
+}
+
+// Keyboard: Escape closes, arrows navigate
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('modal-overlay').classList.contains('open')) return;
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'ArrowLeft')  modalNav(-1);
+  if (e.key === 'ArrowRight') modalNav(1);
+  if (e.key === 'f' || e.key === 'F') toggleFavFromModal();
+});
+
+// ── Card click handler (body → expand; buttons handled separately) ──
+function cardClick(id, event) {
+  // If click is on a button, don't open modal
+  if (event.target.closest('.fav-btn') || event.target.closest('.expand-btn')) return;
+  openModal(id);
+}
+
+// ── Sidebar scroll tracking ──
+function jumpTo(id) {
+  document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'});
+}
 const secs=['sec-ds','sec-dm','sec-ls','sec-lm'];
 const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
@@ -1613,6 +2496,40 @@ const obs=new IntersectionObserver(entries=>{
   });
 },{threshold:0.25,rootMargin:'-58px 0px -50% 0px'});
 secs.forEach(s=>{const el=document.getElementById(s);if(el)obs.observe(el);});
+
+// ── Init ──
+window.addEventListener('DOMContentLoaded', () => {
+  collectCardIds();
+
+  // Patch every card: replace onclick, add fav + expand buttons
+  document.querySelectorAll('.card[id]').forEach(card => {
+    const rawId = card.id.replace(/^c/, '');
+
+    // Remove old onclick and replace
+    card.removeAttribute('onclick');
+    card.addEventListener('click', e => cardClick(rawId, e));
+
+    // Remove old star-badge if present
+    const oldBadge = card.querySelector('.star-badge');
+    if (oldBadge) oldBadge.remove();
+
+    // Add expand button
+    const expandBtn = document.createElement('button');
+    expandBtn.className = 'expand-btn';
+    expandBtn.innerHTML = '⤢ Expand';
+    expandBtn.title = 'Open full preview';
+    expandBtn.addEventListener('click', e => { e.stopPropagation(); openModal(rawId); });
+    card.appendChild(expandBtn);
+
+    // Add fav button
+    const favBtn = document.createElement('button');
+    favBtn.className = 'fav-btn';
+    favBtn.innerHTML = '<span class="fav-star">☆</span><span class="fav-txt">Fav</span>';
+    favBtn.title = 'Add to favourites';
+    favBtn.addEventListener('click', e => { e.stopPropagation(); toggleFav(rawId, e); });
+    card.appendChild(favBtn);
+  });
+});
 </script>
 </body>
 </html>
